@@ -14,75 +14,49 @@
 #include "pt/pt.h"
 #include "lcd.h"
 
+extern struct pt pt_proto, pt_wdt, pt_display;
 
-
-//extern unsigned char idata i2c_buffer[6];
-//
-//extern struct I2C_Channel xdata i2c_channels;
-extern struct pt pt_proto, pt_wdt;
-volatile struct pt pt_i2c_read, pt_freq_measure,pt_sort,pt_i2c_process;
-
-
-//-----------------------------------------
-void Set_Handlers(void);//установить обработчики событий
-//PT_THREAD(I2C_RepeatRead(struct pt *pt));
  //---------------------------------------
 
 void main(void) //using 0
 {			   
 	EA = 0;
-	
-	
+		
 	PLLCON&=PLLCON_VAL;//настройка частоты процессора
 	CFG845=0x1;//enable xram
-//	RestoreCalibrate();
+
 	
 //	ChannelsInit();//инициализаци€ настроек каналов
 //	Protocol_Init();	
-//	Timer1_Initialize(); //таймер шедулера 200√ц	
-//	ADC_Initialize();
+	Timer1_Initialize(); //таймер шедулера 200√ц	
+
 	//UART_Init();
 	LCD_Initialize();
-//	Frequency_Init();
+
 
 //	WDT_Init(WDT_2000);//включить сторожевой таймер
-//	I2C_Init();
-
-
 	
-//	PT_INIT(&pt_i2c_read);
-//	PT_INIT(&pt_freq_measure);
-//	PT_INIT(&pt_sort);
-//	PT_INIT(&pt_i2c_process);
 
 	EA=1;
 
-//	i2c_buffer[0]=0x0;//сброс флага инициализации
-
-///	I2C_Repeat_Start_Read(I2C_ADDR,&i2c_buffer,1,i2c_channels.I2C_CHNL.i2c_buf,sizeof(i2c_channels));	  //производим первое чтение заранее
 	while(1)
 	{	
 //		ProtoProcess(&pt_proto);
-//		I2C_RepeatRead(&pt_i2c_read);
-//		Frequency_Measure_Process(&pt_freq_measure);	
-//		ulongsort_process(&pt_sort);
-//		I2C_Process(&pt_i2c_process);
+
+
 //		WDT_Process(&pt_wdt);	
-LCD_WriteString("LOL!");    
+		DisplayProcess(&pt_display);   
 	}
 }
 //-----------------------------------------------------------------------------
 
-//-----------------------------------
 void Timer1_Interrupt(void) interrupt 3  //таймер шедулера
 {
-//---------------------------------------
 	TH1	= TH1_VAL; ///200 Hz;
 	TL1 = TL1_VAL;//
-//	pt_i2c_read.pt_time++;
-//	pt_freq_measure.pt_time++;
-//	pt_sort.pt_time++;
+
 	pt_proto.pt_time++;
 	pt_wdt.pt_time++;
+	pt_display.pt_time++;
 	return;	
 }

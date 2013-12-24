@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ADuC845.h>
 
+#include "pt/pt.h"
 
 #define RS_IR 0
 #define RS_DR 1
@@ -37,6 +38,8 @@ void LCD_WriteData(char ch);
 void LCD_WriteString(char *buf);
 char LCD_ReadAC();
 void LCD_WriteAC(unsigned char value);
+
+PT_THREAD(DisplayProcess(struct pt *pt));
 
 void delay(unsigned int);
 

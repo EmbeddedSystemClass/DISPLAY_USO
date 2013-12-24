@@ -1,4 +1,9 @@
 #include "lcd.h"
+#include "stdio.h"
+
+
+
+volatile struct pt pt_display;
 
 void LCD_Strobe();
 void LCD_WaitWhileBusy();
@@ -24,7 +29,7 @@ void LCD_Initialize()
 
 	// ждем >= 4.1 мс
 
-	 delay(10000);
+	 delay(1000);
 
 
 	LCD_RS = RS_IR;
@@ -46,6 +51,8 @@ void LCD_Initialize()
 	LCD_WriteCommand(LCD_CMD_ON);
 	LCD_WriteCommand(LCD_CMD_ON);
 	LCD_WriteCommand(LCD_4_STR);
+
+	PT_INIT(&pt_display);
 }
 
 // Запись команды
@@ -110,3 +117,45 @@ void delay(unsigned int time)
 {
 	while(time--);
 }
+
+#define LCD_1_STR_ADDR	0x00
+#define LCD_2_STR_ADDR	0x40
+#define LCD_3_STR_ADDR	0x14
+#define LCD_4_STR_ADDR	0x54
+
+PT_THREAD(DisplayProcess(struct pt *pt))
+ {
+static unsigned char string_buf[32];
+
+static float channel_1_val=100.55;
+
+  PT_BEGIN(pt);
+
+  while(1) 
+  {
+  	PT_DELAY(pt,100);
+	channel_1_val+=0.33;
+	sprintf(&string_buf,"Channel 1=%.2f",channel_1_val);
+	LCD_WriteAC(LCD_1_STR_ADDR);
+	LCD_WriteString(&string_buf);
+
+	channel_1_val+=0.1;
+	sprintf(&string_buf,"Channel 2=%.2f",channel_1_val);
+	LCD_WriteAC(LCD_2_STR_ADDR);
+	LCD_WriteString(&string_buf);
+
+	channel_1_val+=0.22;
+	sprintf(&string_buf,"Channel 3=%.2f",channel_1_val);
+	LCD_WriteAC(LCD_3_STR_ADDR);
+	LCD_WriteString(&string_buf);
+
+    channel_1_val+=0.6;
+	sprintf(&string_buf,"Channel 4=%.2f",channel_1_val);
+	LCD_WriteAC(LCD_4_STR_ADDR);
+	LCD_WriteString(&string_buf);
+
+	
+  }
+
+  PT_END(pt);
+ }
