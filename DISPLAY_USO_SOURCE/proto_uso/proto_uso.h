@@ -100,6 +100,7 @@ unsigned char Request_Error(unsigned char error_code);//	Ошибочный запрос/ответ;
 
 
 void Channel_All_Get_Data_Request(void);//запрос к ведомому усо на получение данных всех каналов
+void Channel_All_Get_Data_Resp_Handle(void);//обработка ответа усо
 
 void ProtoBufHandling(void); //процесс обработки принятого запроса
 PT_THREAD(ProtoProcess(struct pt *pt));//главный процесс протокола

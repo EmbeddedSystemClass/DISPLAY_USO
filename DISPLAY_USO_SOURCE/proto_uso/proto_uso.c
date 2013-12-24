@@ -587,101 +587,112 @@ void ProtoBufHandling(void) //using 0 //процесс обработки принятого запроса
 {
   switch(RecieveBuf[4])
   {
-//---------------------------------------
-  	case GET_DEV_INFO_REQ:
+
+  	case CHANNEL_ALL_GET_DATA_RESP:
 	{
-		buf_len=Send_Info();	
+		
+	}
+	break;
+
+	default :
+	{
 	}
 	break;
 //---------------------------------------
-  	case NODE_FULL_INIT_REQ:
-	{
-		buf_len=Node_Full_Init();
-	}
-	break;
-//---------------------------------------
-  	case CHANNEL_LIST_INIT_REQ:
-	{	
-		buf_len=Channel_List_Init();	
-	}
-	break;
-//---------------------------------------
-	case CHANNEL_GET_DATA_REQ:
-	{
-		buf_len=Channel_Get_Data();	
-	}
-	break;
-	//-----------------------------------
-	case CHANNEL_SET_PARAMETERS_REQ:
-	{
-		buf_len=Channel_Set_Parameters();
-	}
-	break;
-	//-----------------------------------
-	case CHANNEL_SET_ORDER_QUERY_REQ:
-	{
-		buf_len=Channel_Set_Order_Query();
-	}
-	break;
-//----------------------------------------
-	case CHANNEL_GET_DATA_ORDER_REQ:
-	{
-		 buf_len=Channel_Get_Data_Order();
-	}
-	break;
-//----------------------------------------
-	case CHANNEL_SET_STATE_REQ:
-	{
-		 buf_len=Channel_Set_State();
-	}
-	break;
-//----------------------------------------
-	case CHANNEL_GET_DATA_ORDER_M2_REQ:
-	{
-		 buf_len=Channel_Get_Data_Order_M2();
-	}
-	break;
-//------------------------------------------
-	case CHANNEL_SET_RESET_STATE_FLAGS_REQ:
-	{
-		buf_len=Channel_Set_Reset_State_Flags();
-	}
-	break;
-//------------------------------------------
-	case CHANNEL_ALL_GET_DATA_REQ:
-	{
-		 buf_len=Channel_All_Get_Data();
-	}
-	break;
-//------------------------------------------
-	case CHANNEL_SET_ADDRESS_DESC:
-	{
-		 buf_len=Channel_Set_Address_Desc();
-	}
-	break;
-//------------------------------------------
-	case CHANNEL_SET_CALIBRATE:
-	{
-		 buf_len=Channel_Set_Calibrate();
-	}
-	break;
-//------------------------------------------
-	case CHANNEL_SET_ALL_DEFAULT:
-	{
-		 buf_len=Channel_Set_All_Default();
-	}
-	break;
-//------------------------------------------
-	case CHANNEL_GET_CALIBRATE_REQ:
-	{
-		 buf_len=Channel_Get_Calibrate_Value();
-	}
-	break;
-//------------------------------------------
-    default:
-	{
-	   buf_len=Request_Error(FR_COMMAND_NOT_EXIST);
-    }								   
+//  	case GET_DEV_INFO_REQ:
+//	{
+//		buf_len=Send_Info();	
+//	}
+//	break;
+////---------------------------------------
+//  	case NODE_FULL_INIT_REQ:
+//	{
+//		buf_len=Node_Full_Init();
+//	}
+//	break;
+////---------------------------------------
+//  	case CHANNEL_LIST_INIT_REQ:
+//	{	
+//		buf_len=Channel_List_Init();	
+//	}
+//	break;
+////---------------------------------------
+//	case CHANNEL_GET_DATA_REQ:
+//	{
+//		buf_len=Channel_Get_Data();	
+//	}
+//	break;
+//	//-----------------------------------
+//	case CHANNEL_SET_PARAMETERS_REQ:
+//	{
+//		buf_len=Channel_Set_Parameters();
+//	}
+//	break;
+//	//-----------------------------------
+//	case CHANNEL_SET_ORDER_QUERY_REQ:
+//	{
+//		buf_len=Channel_Set_Order_Query();
+//	}
+//	break;
+////----------------------------------------
+//	case CHANNEL_GET_DATA_ORDER_REQ:
+//	{
+//		 buf_len=Channel_Get_Data_Order();
+//	}
+//	break;
+////----------------------------------------
+//	case CHANNEL_SET_STATE_REQ:
+//	{
+//		 buf_len=Channel_Set_State();
+//	}
+//	break;
+////----------------------------------------
+//	case CHANNEL_GET_DATA_ORDER_M2_REQ:
+//	{
+//		 buf_len=Channel_Get_Data_Order_M2();
+//	}
+//	break;
+////------------------------------------------
+//	case CHANNEL_SET_RESET_STATE_FLAGS_REQ:
+//	{
+//		buf_len=Channel_Set_Reset_State_Flags();
+//	}
+//	break;
+////------------------------------------------
+//	case CHANNEL_ALL_GET_DATA_REQ:
+//	{
+//		 buf_len=Channel_All_Get_Data();
+//	}
+//	break;
+////------------------------------------------
+//	case CHANNEL_SET_ADDRESS_DESC:
+//	{
+//		 buf_len=Channel_Set_Address_Desc();
+//	}
+//	break;
+////------------------------------------------
+//	case CHANNEL_SET_CALIBRATE:
+//	{
+//		 buf_len=Channel_Set_Calibrate();
+//	}
+//	break;
+////------------------------------------------
+//	case CHANNEL_SET_ALL_DEFAULT:
+//	{
+//		 buf_len=Channel_Set_All_Default();
+//	}
+//	break;
+////------------------------------------------
+//	case CHANNEL_GET_CALIBRATE_REQ:
+//	{
+//		 buf_len=Channel_Get_Calibrate_Value();
+//	}
+//	break;
+////------------------------------------------
+//    default:
+//	{
+//	   buf_len=Request_Error(FR_COMMAND_NOT_EXIST);
+//    }								   
   }
 
   return;
@@ -704,6 +715,69 @@ void Channel_All_Get_Data_Request(void)//запрос к ведомому усо на получение данн
 	SBUF=TransferBuf[transf_count];//передача байта, остальным займется автомат
 	transf_count++;//инкрементируем счетчик переданных
 	ES=1; //включим прерывание уарт	
+}
+//-----------------------------------------------------------------------------------
+void Channel_All_Get_Data_Resp_Handle(void)//обработка ответа усо
+{
+  unsigned char index=8;
+  unsigned char channel_counter=1;
+  unsigned char channel_type=0;
+  unsigned char channel_mode=0;
+
+	while(channel_counter<CHANNEL_NUMBER)
+	{
+		channel_type=(RecieveBuf[index+1]>>4)&0xF;
+		channel_mode=(RecieveBuf[index+1])&0xF;
+
+
+	switch(channel_type)
+	{
+		 case CHNL_ADC:  //аналоговый канал
+		 {
+			 switch(channel_mode)
+             {
+				  case CHNL_ADC_FIX_16:
+				  {
+
+				  }
+				  break; 
+
+				  case CHNL_ADC_FIX_24:
+				  {
+
+				  }
+				  break;
+			  }
+		  }
+		  break;
+
+	 	  case CHNL_DOL:	 //ДОЛ
+		  {
+
+		  }
+		  break;
+
+		  case CHNL_FREQ: //частотный
+		  { 
+			  switch(channel_mode)
+		      {	  
+					  
+					  case CHNL_FREQ_COUNT_T:
+					  {
+
+					  }
+					  break;
+
+					  case CHNL_FREQ_256:
+					  {
+
+					  }
+					  break; 
+			   }
+		  }
+		  break;		 
+	  }
+	}
 }
 //-----------------------------------------------------------------------------------
 //#pragma OT(0,Speed) 
