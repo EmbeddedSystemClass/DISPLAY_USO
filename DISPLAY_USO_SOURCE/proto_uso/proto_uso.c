@@ -14,7 +14,7 @@ volatile unsigned char xdata DEV_NAME[DEVICE_NAME_LENGTH_SYM] ="<<uUSO_2>>"; //и
 volatile unsigned char xdata NOTICE[DEVICE_DESC_MAX_LENGTH_SYM]="<-- GEOSPHERA_2012 -->";//примечание 	
 volatile unsigned char xdata VERSION[DEVICE_VER_LENGTH_SYM] ="\x30\x30\x30\x30\x31";	// версия программы ПЗУ	не больше 5 байт
 
-volatile unsigned char xdata ADRESS_DEV=0x1;
+volatile unsigned char xdata ADRESS_DEV=0x3;
 
 volatile unsigned char xdata dev_desc_len=20;//длина описания устройства
 //--------------------------------global variable------------------------------------
@@ -33,6 +33,8 @@ volatile unsigned char xdata  TransferBuf[MAX_LENGTH_TR_BUF]={0} ; //буфер перед
 //--------------------------------------------------------------------
 volatile unsigned char xdata  STATE_BYTE=0xC0;//байт состояния устройства
 volatile unsigned char idata symbol=0xFF;//принятый символ
+
+unsigned int frame_receieved=0;
 
 volatile struct pt pt_proto;
 //-----------------------------------------------------------------------------------
@@ -168,7 +170,12 @@ void UART_ISR(void) interrupt 4 //using 1
 		{
 			transf_count=0;		//обнуляем счетчик
 			CUT_OUT_NULL=0;
-			PT_RESTART_OUT(pt_proto);  //внепроцессный рестарт			
+		//	PT_RESTART_OUT(pt_proto);  //внепроцессный рестарт
+			recieve_count=0x0;//??
+			REN=1;//recieve enqble
+			DE_RE=0;//линия на прием
+			ES=1;
+			CUT_OUT_NULL=0;			
 		}					   
 	}			
 	EA=1;
@@ -183,7 +190,7 @@ void Protocol_Init(void) //using 0
 	
 //	TransferBuf=&RecieveBuf[0];	 //буфер ответа =буфер запроса
 
-	Restore_Dev_Address_Desc();
+//	Restore_Dev_Address_Desc();
 
 
 	recieve_count=0x0;//счетчик буфера приема
@@ -196,136 +203,136 @@ void Protocol_Init(void) //using 0
 	return;
 }
 //-----------------------------------------------------------------------------
-unsigned char Send_Info(void) //using 0    //посылка информации об устройстве
-{
-	    unsigned char    i=0;
-	   									
-	   //заголовок кадра---
-	   TransferBuf[0]=0x00;
-	   TransferBuf[1]=0xD7;
-	   TransferBuf[2]=0x29;
-	   //------------------
-	   TransferBuf[3]=ADRESS_DEV;  // адрес узла
-	   TransferBuf[4]=GET_DEV_INFO_RESP;  // код операции
-	   TransferBuf[6]=STATE_BYTE;
-
-	   for(i=0;i<20;i++)
-	   {				  // записываем наименование изделия
-			   if(i<DEVICE_NAME_LENGTH_SYM)
-			   {
-			     	TransferBuf[i+7]=DEV_NAME[i];
-			   }
-			   else
-			   {
-			   		TransferBuf[i+7]=0x00;
-			   }
-		}
-	
-	   for(i=0;i<5;i++)                   // записываем версию ПЗУ
-	   {
-	       if(i<DEVICE_VER_LENGTH_SYM)
-		   {
-		    	 TransferBuf[i+27]=VERSION[i];
-		   }
-	   }
-
-	   TransferBuf[32]=channel_number;		   // количество каналов
-
-	   for(i=0;i<channel_number;i++)				   // данные по каналу
-       {
-		  	TransferBuf[i*2+33]=((channels[i].settings.set.type)<<4)|channels[i].settings.set.modific; // байт данных
-		  	TransferBuf[i*2+33+1]=0x00;							// резерв байт
-	   }	
-	   for(i=0;i<dev_desc_len;i++)					// записываем примечание
-	   {
-			 TransferBuf[i+33+channel_number*2]=NOTICE[i];
-	   }
-			
-	   TransferBuf[5]=28+channel_number*2+dev_desc_len;			// подсчет длины данных 
-	   TransferBuf[33+channel_number*2+dev_desc_len]=CRC_Check(&TransferBuf[1],32+channel_number*2+dev_desc_len); // подсчет контрольной суммы
-
-	return (34+channel_number*2+dev_desc_len);
-}
+//unsigned char Send_Info(void) //using 0    //посылка информации об устройстве
+//{
+//	    unsigned char    i=0;
+//	   									
+//	   //заголовок кадра---
+//	   TransferBuf[0]=0x00;
+//	   TransferBuf[1]=0xD7;
+//	   TransferBuf[2]=0x29;
+//	   //------------------
+//	   TransferBuf[3]=ADRESS_DEV;  // адрес узла
+//	   TransferBuf[4]=GET_DEV_INFO_RESP;  // код операции
+//	   TransferBuf[6]=STATE_BYTE;
+//
+//	   for(i=0;i<20;i++)
+//	   {				  // записываем наименование изделия
+//			   if(i<DEVICE_NAME_LENGTH_SYM)
+//			   {
+//			     	TransferBuf[i+7]=DEV_NAME[i];
+//			   }
+//			   else
+//			   {
+//			   		TransferBuf[i+7]=0x00;
+//			   }
+//		}
+//	
+//	   for(i=0;i<5;i++)                   // записываем версию ПЗУ
+//	   {
+//	       if(i<DEVICE_VER_LENGTH_SYM)
+//		   {
+//		    	 TransferBuf[i+27]=VERSION[i];
+//		   }
+//	   }
+//
+//	   TransferBuf[32]=channel_number;		   // количество каналов
+//
+//	   for(i=0;i<channel_number;i++)				   // данные по каналу
+//       {
+//		  	TransferBuf[i*2+33]=((channels[i].settings.set.type)<<4)|channels[i].settings.set.modific; // байт данных
+//		  	TransferBuf[i*2+33+1]=0x00;							// резерв байт
+//	   }	
+//	   for(i=0;i<dev_desc_len;i++)					// записываем примечание
+//	   {
+//			 TransferBuf[i+33+channel_number*2]=NOTICE[i];
+//	   }
+//			
+//	   TransferBuf[5]=28+channel_number*2+dev_desc_len;			// подсчет длины данных 
+//	   TransferBuf[33+channel_number*2+dev_desc_len]=CRC_Check(&TransferBuf[1],32+channel_number*2+dev_desc_len); // подсчет контрольной суммы
+//
+//	return (34+channel_number*2+dev_desc_len);
+//}
 //-----------------------------------------------------------------------------
-unsigned char Node_Full_Init(void) //using 0 //полная инициализация узла
-{
-	return 0;
-}
+//unsigned char Node_Full_Init(void) //using 0 //полная инициализация узла
+//{
+//	return 0;
+//}
+////-----------------------------------------------------------------------------
+//unsigned char Channel_List_Init(void) //using 0 //Инициализация списка каналов узла (без потери данных);
+//{
+//	return 0;
+//}
+////-----------------------------------------------------------------------------
+//unsigned char Channel_Get_Data(void) //using 0 //Выдать данные по каналам, согласно абсолютной нумерации;
+//{
+//	return 0;
+//}
+////-----------------------------------------------------------------------------
+//unsigned char  Channel_Set_Parameters(void) //using 0 //Установить параметры по каналам, согласно абсолютной нумерации;
+//{
+//       unsigned char  index=0, store_data=0;//i=0;
+//	 
+//	   while(index<RecieveBuf[5]-1)				   // данные по каналам
+//	      {
+//			  	if(RecieveBuf[6+index]<channel_number)
+//			    {
+//					switch((RecieveBuf[6+index+1]>>4)&0xF)
+//					{
+//					 		case CHNL_ADC://АЦП
+//							{
+//								if((channels[RecieveBuf[6+index]].settings.set.modific!=RecieveBuf[6+index+1])||(channels[RecieveBuf[6+index]].settings.set.state_byte_1!=RecieveBuf[6+index+2]) || (channels[RecieveBuf[6+index]].settings.set.state_byte_2!=RecieveBuf[6+index+3]))
+//								{  
+//									channels[RecieveBuf[6+index]].settings.set.state_byte_1=RecieveBuf[6+index+2];
+//									channels[RecieveBuf[6+index]].settings.set.state_byte_2=RecieveBuf[6+index+3];
+//									channels[RecieveBuf[6+index]].settings.set.modific	   =RecieveBuf[6+index+1]&0xF;
+//									store_data=1;
+//									
+//								}
+//								index++;
+//							}
+//							break;
+//
+//
+//							default :
+//							{
+//								_nop_();
+//							}			
+//					}
+//					index=index+3;
+//				}
+//				else
+//				{
+//					return Request_Error(FR_UNATTENDED_CHANNEL);
+//				}
+//		  }
+//	   if(store_data)
+//	   {
+//	   		Store_Channels_Data();	//сохраним настройки каналов в ППЗУ
+//	   }
+//
+//	   return Request_Error(FR_SUCCESFUL);
+//}
 //-----------------------------------------------------------------------------
-unsigned char Channel_List_Init(void) //using 0 //Инициализация списка каналов узла (без потери данных);
-{
-	return 0;
-}
-//-----------------------------------------------------------------------------
-unsigned char Channel_Get_Data(void) //using 0 //Выдать данные по каналам, согласно абсолютной нумерации;
-{
-	return 0;
-}
-//-----------------------------------------------------------------------------
-unsigned char  Channel_Set_Parameters(void) //using 0 //Установить параметры по каналам, согласно абсолютной нумерации;
-{
-       unsigned char  index=0, store_data=0;//i=0;
-	 
-	   while(index<RecieveBuf[5]-1)				   // данные по каналам
-	      {
-			  	if(RecieveBuf[6+index]<channel_number)
-			    {
-					switch((RecieveBuf[6+index+1]>>4)&0xF)
-					{
-					 		case CHNL_ADC://АЦП
-							{
-								if((channels[RecieveBuf[6+index]].settings.set.modific!=RecieveBuf[6+index+1])||(channels[RecieveBuf[6+index]].settings.set.state_byte_1!=RecieveBuf[6+index+2]) || (channels[RecieveBuf[6+index]].settings.set.state_byte_2!=RecieveBuf[6+index+3]))
-								{  
-									channels[RecieveBuf[6+index]].settings.set.state_byte_1=RecieveBuf[6+index+2];
-									channels[RecieveBuf[6+index]].settings.set.state_byte_2=RecieveBuf[6+index+3];
-									channels[RecieveBuf[6+index]].settings.set.modific	   =RecieveBuf[6+index+1]&0xF;
-									store_data=1;
-									
-								}
-								index++;
-							}
-							break;
-
-
-							default :
-							{
-								_nop_();
-							}			
-					}
-					index=index+3;
-				}
-				else
-				{
-					return Request_Error(FR_UNATTENDED_CHANNEL);
-				}
-		  }
-	   if(store_data)
-	   {
-	   		Store_Channels_Data();	//сохраним настройки каналов в ППЗУ
-	   }
-
-	   return Request_Error(FR_SUCCESFUL);
-}
-//-----------------------------------------------------------------------------
-unsigned char Channel_Set_Order_Query(void) //using 0 //Задать последовательность опроса;
-{
-	return 0;
-}
-//-----------------------------------------------------------------------------
-unsigned char Channel_Get_Data_Order(void) //using 0 //Выдать данные по каналам, согласно последовательности опроса;
-{
-	return 0;
-}
-//-----------------------------------------------------------------------------
-unsigned char Channel_Set_State(void) //using 0 //Установить состояния по каналам, согласно абсолютной нумерации;
-{
-	return 0;
-}
-//-----------------------------------------------------------------------------
-unsigned char  Channel_Get_Data_Order_M2(void) //using 0 //Выдать данные по каналам, согласно последовательности опроса;
-{
-	return 0;
-}
+//unsigned char Channel_Set_Order_Query(void) //using 0 //Задать последовательность опроса;
+//{
+//	return 0;
+//}
+////-----------------------------------------------------------------------------
+//unsigned char Channel_Get_Data_Order(void) //using 0 //Выдать данные по каналам, согласно последовательности опроса;
+//{
+//	return 0;
+//}
+////-----------------------------------------------------------------------------
+//unsigned char Channel_Set_State(void) //using 0 //Установить состояния по каналам, согласно абсолютной нумерации;
+//{
+//	return 0;
+//}
+////-----------------------------------------------------------------------------
+//unsigned char  Channel_Get_Data_Order_M2(void) //using 0 //Выдать данные по каналам, согласно последовательности опроса;
+//{
+//	return 0;
+//}
 //-----------------------------------------------------------------------------
 unsigned char Channel_Set_Reset_State_Flags(void) //using 0 //	Установка/Сброс флагов состояния 
 {
@@ -447,120 +454,120 @@ unsigned char Channel_All_Get_Data(void) //using 0 //Выдать информацию по всем к
 	  return (unsigned char)(index+1);
 }
 //-----------------------------------------------------------------------------
-#pragma OT(0,Speed)
-unsigned char Channel_Set_Calibrate(void)//установить верхнюю или нижнюю точку калибровки
-{
-
-	float K,C;	
-
-	sym_8_to_float.result_char[0]=RecieveBuf[11];
-	sym_8_to_float.result_char[1]=RecieveBuf[10];
-	sym_8_to_float.result_char[2]=RecieveBuf[9];
-	sym_8_to_float.result_char[3]=RecieveBuf[8];
-
-   	K=sym_8_to_float.result_float;
-
- 	sym_8_to_float.result_char[0]=RecieveBuf[15];
-	sym_8_to_float.result_char[1]=RecieveBuf[14];
-	sym_8_to_float.result_char[2]=RecieveBuf[13];
-	sym_8_to_float.result_char[3]=RecieveBuf[12];
-
-   	C=sym_8_to_float.result_float;
-
-	switch(RecieveBuf[7])
-	{
-		case 0:
-		{
-			Calibrate(RecieveBuf[6],K,C);	
-		}
-		break;
-
-		case 1:
-		{
-			Calibrate_Set_Flag(RecieveBuf[6],RESET);
-		}
-		break;
-
-		case 2:
-		{
-			Calibrate_Set_Flag(RecieveBuf[6],SET);	
-		}
-		break;
-
-		default :
-		{
-			_nop_();
-		}
-		break;
-	}
-
-
-	return	Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение	
-}
+//#pragma OT(0,Speed)
+//unsigned char Channel_Set_Calibrate(void)//установить верхнюю или нижнюю точку калибровки
+//{
+//
+//	float K,C;	
+//
+//	sym_8_to_float.result_char[0]=RecieveBuf[11];
+//	sym_8_to_float.result_char[1]=RecieveBuf[10];
+//	sym_8_to_float.result_char[2]=RecieveBuf[9];
+//	sym_8_to_float.result_char[3]=RecieveBuf[8];
+//
+//   	K=sym_8_to_float.result_float;
+//
+// 	sym_8_to_float.result_char[0]=RecieveBuf[15];
+//	sym_8_to_float.result_char[1]=RecieveBuf[14];
+//	sym_8_to_float.result_char[2]=RecieveBuf[13];
+//	sym_8_to_float.result_char[3]=RecieveBuf[12];
+//
+//   	C=sym_8_to_float.result_float;
+//
+//	switch(RecieveBuf[7])
+//	{
+//		case 0:
+//		{
+//			Calibrate(RecieveBuf[6],K,C);	
+//		}
+//		break;
+//
+//		case 1:
+//		{
+//			Calibrate_Set_Flag(RecieveBuf[6],RESET);
+//		}
+//		break;
+//
+//		case 2:
+//		{
+//			Calibrate_Set_Flag(RecieveBuf[6],SET);	
+//		}
+//		break;
+//
+//		default :
+//		{
+//			_nop_();
+//		}
+//		break;
+//	}
+//
+//
+//	return	Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение	
+//}
 //------------------------------------------------------------------------------
-unsigned char Channel_Get_Calibrate_Value(void)//получить коэфициенты калибровки заданного канала
-{
-   unsigned char data channel=0;
-
-
-   TransferBuf[0]=0x00;TransferBuf[1]=0xD7;TransferBuf[2]=0x29;
-   TransferBuf[3]=ADRESS_DEV;  // адрес узла
-   TransferBuf[4]=CHANNEL_GET_CALIBRATE_RESP;  // код операции
-   TransferBuf[5]=0xB;//длина оставшейся части кадра
-
-
-   channel=RecieveBuf[6];
-
-   if(channel>=channel_number)
-   {
-   		return Request_Error(FR_COMMAND_STRUCT_ERROR);//непрвильный номер канала	
-   }
-
-   TransferBuf[6]=channel;
-
-   TransferBuf[7]=channels[channel].calibrate.cal.calibrate;
-
-   sym_8_to_float.result_float=channels[channel].calibrate.cal.K;
-
-   	TransferBuf[11]=sym_8_to_float.result_char[0];
-	TransferBuf[10]=sym_8_to_float.result_char[1];
-	TransferBuf[9]=sym_8_to_float.result_char[2];
-	TransferBuf[8]=sym_8_to_float.result_char[3];
-
-   sym_8_to_float.result_float=channels[channel].calibrate.cal.C;
-
-   	TransferBuf[15]=sym_8_to_float.result_char[0];
-	TransferBuf[14]=sym_8_to_float.result_char[1];
-	TransferBuf[13]=sym_8_to_float.result_char[2];
-	TransferBuf[12]=sym_8_to_float.result_char[3];
-
-	TransferBuf[16]=CRC_Check(&TransferBuf[1],15); // подсчет кс
-	return 0x11;//17	
-}
+//unsigned char Channel_Get_Calibrate_Value(void)//получить коэфициенты калибровки заданного канала
+//{
+//   unsigned char data channel=0;
+//
+//
+//   TransferBuf[0]=0x00;TransferBuf[1]=0xD7;TransferBuf[2]=0x29;
+//   TransferBuf[3]=ADRESS_DEV;  // адрес узла
+//   TransferBuf[4]=CHANNEL_GET_CALIBRATE_RESP;  // код операции
+//   TransferBuf[5]=0xB;//длина оставшейся части кадра
+//
+//
+//   channel=RecieveBuf[6];
+//
+//   if(channel>=channel_number)
+//   {
+//   		return Request_Error(FR_COMMAND_STRUCT_ERROR);//непрвильный номер канала	
+//   }
+//
+//   TransferBuf[6]=channel;
+//
+//   TransferBuf[7]=channels[channel].calibrate.cal.calibrate;
+//
+//   sym_8_to_float.result_float=channels[channel].calibrate.cal.K;
+//
+//   	TransferBuf[11]=sym_8_to_float.result_char[0];
+//	TransferBuf[10]=sym_8_to_float.result_char[1];
+//	TransferBuf[9]=sym_8_to_float.result_char[2];
+//	TransferBuf[8]=sym_8_to_float.result_char[3];
+//
+//   sym_8_to_float.result_float=channels[channel].calibrate.cal.C;
+//
+//   	TransferBuf[15]=sym_8_to_float.result_char[0];
+//	TransferBuf[14]=sym_8_to_float.result_char[1];
+//	TransferBuf[13]=sym_8_to_float.result_char[2];
+//	TransferBuf[12]=sym_8_to_float.result_char[3];
+//
+//	TransferBuf[16]=CRC_Check(&TransferBuf[1],15); // подсчет кс
+//	return 0x11;//17	
+//}
 //------------------------------------------------------------------------------
-unsigned char Channel_Set_Address_Desc(void)//установить новый адрес устройства, имя, описание, версию прошивки и комментарий
-{
-	unsigned char  desc_len=0;
-	desc_len=RecieveBuf[5]-27;
-
-	if(desc_len)
-	{	
-   		Store_Dev_Address_Desc(RecieveBuf[6],&RecieveBuf[7],&RecieveBuf[27],&RecieveBuf[32],desc_len);
-		return 	  Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение
-	}
-	else
-	{
-		return Request_Error(FR_COMMAND_STRUCT_ERROR);
-	}
-	return 0;
-}
+//unsigned char Channel_Set_Address_Desc(void)//установить новый адрес устройства, имя, описание, версию прошивки и комментарий
+//{
+//	unsigned char  desc_len=0;
+//	desc_len=RecieveBuf[5]-27;
+//
+//	if(desc_len)
+//	{	
+//   		Store_Dev_Address_Desc(RecieveBuf[6],&RecieveBuf[7],&RecieveBuf[27],&RecieveBuf[32],desc_len);
+//		return 	  Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение
+//	}
+//	else
+//	{
+//		return Request_Error(FR_COMMAND_STRUCT_ERROR);
+//	}
+//	return 0;
+//}
 //-----------------------------------------------------------------------------
-unsigned char Channel_Set_All_Default(void)//установить настройки и калибровки каналов по умолчанию
-{
-	Channels_Set_Default();
-	Calibrate_Set_Default();
-	return	Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение		
-}
+//unsigned char Channel_Set_All_Default(void)//установить настройки и калибровки каналов по умолчанию
+//{
+//	Channels_Set_Default();
+//	Calibrate_Set_Default();
+//	return	Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение		
+//}
 //-----------------------------------------------------------------------------
 unsigned char Request_Error(unsigned char error_code) //using 0 //	Ошибочный запрос/ответ;
 {
@@ -680,6 +687,25 @@ void ProtoBufHandling(void) //using 0 //процесс обработки принятого запроса
   return;
 }
 //-----------------------------------------------------------------------------------
+void Channel_All_Get_Data_Request(void)//запрос к ведомому усо на получение данных всех каналов
+{
+   TransferBuf[0]=0x00;TransferBuf[1]=0xD7;TransferBuf[2]=0x29;
+   TransferBuf[3]=ADRESS_DEV;  // адрес узла
+   TransferBuf[4]=CHANNEL_ALL_GET_DATA_REQ;  // код операции
+   TransferBuf[5]=0x1;//длина оставшейся части кадра
+   TransferBuf[6]=CRC_Check(TransferBuf,6);
+   buf_len=7;
+
+//			DE_RE=1; //переключаем RS485 в режим передачи
+					
+	REN=0;	//запрет приема-только передача
+	transf_count=0;
+	CUT_OUT_NULL=0;
+	SBUF=TransferBuf[transf_count];//передача байта, остальным займется автомат
+	transf_count++;//инкрементируем счетчик переданных
+	ES=1; //включим прерывание уарт	
+}
+//-----------------------------------------------------------------------------------
 //#pragma OT(0,Speed) 
 PT_THREAD(ProtoProcess(struct pt *pt))
  {
@@ -693,13 +719,13 @@ PT_THREAD(ProtoProcess(struct pt *pt))
 		REN=1;//recieve enqble
 		DE_RE=0;//линия на прием
 		ES=1;
+		CUT_OUT_NULL=0;
   //-----------------------------
-	  // PT_WAIT_UNTIL(pt,RECIEVED); //ждем команды на старт
+
 	   wdt_count[Proto_Proc].process_state=IDLE;
 
 	   PT_YIELD_UNTIL(pt,RECIEVED); //ждем команды на старт	
 	   wdt_count[Proto_Proc].count++;
-	  // WDT_Clear();//если посылка не приходит-сбрасываем
 
 	  
 	    RECIEVED=0;
@@ -717,24 +743,26 @@ PT_THREAD(ProtoProcess(struct pt *pt))
 		}
 		PT_YIELD(pt);//дадим другим процессам время
   //-----------------------------
+  		frame_receieved++;//кадров принято
   		ProtoBufHandling();//процедура обработки сообщения	
-		if(buf_len==0)//если в буфере пусто
-		{
-			PT_RESTART(pt);//перезапустим протокол	
-		}
-		else
-		{
-			DE_RE=1; //переключаем RS485 в режим передачи
-							
-			REN=0;	//запрет приема-только передача
-			transf_count=0;
-			CUT_OUT_NULL=0;
-			SBUF=TransferBuf[transf_count];//передача байта, остальным займется автомат
-			transf_count++;//инкрементируем счетчик переданных
-			ES=1; //включим прерывание уарт	
 
-			PT_DELAY(pt,10);			
-		}
+//		if(buf_len==0)//если в буфере пусто
+//		{
+//			PT_RESTART(pt);//перезапустим протокол	
+//		}
+//		else
+//		{
+//			DE_RE=1; //переключаем RS485 в режим передачи
+//							
+//			REN=0;	//запрет приема-только передача
+//			transf_count=0;
+//			CUT_OUT_NULL=0;
+//			SBUF=TransferBuf[transf_count];//передача байта, остальным займется автомат
+//			transf_count++;//инкрементируем счетчик переданных
+//			ES=1; //включим прерывание уарт	
+//
+//			PT_DELAY(pt,10);			
+//		}
 
 		
   //-----------------------------
@@ -743,60 +771,60 @@ PT_THREAD(ProtoProcess(struct pt *pt))
  PT_END(pt);
 }
 //-----------------------------------------------------------------------------------------------
-void Store_Dev_Address_Desc(unsigned char addr,void* name,void* ver,void* desc,unsigned char desc_len)//сохранить в ППЗУ новый адрес устройства, имя, версию, описание
-{
-//небезопасная
-	
-	unsigned int blocks=0;//здесь будет количество блоков, нужных дя сохранения комментария
-	
-	EEPROM_Write(&addr,1,DEVICE_ADDR_EEPROM);	 //1 блок
-	EEPROM_Write(name,DEVICE_NAME_LENGTH,DEVICE_NAME_EEPROM); //5 блоков
-	memcpy(DEV_NAME,name,DEVICE_NAME_LENGTH_SYM);//копируем полученное имя в буфер
-
-	EEPROM_Write(ver,DEVICE_VER_LENGTH,DEVICE_VER_EEPROM);		//2 блока
-	memcpy(VERSION,ver,DEVICE_VER_LENGTH_SYM);//копируем версию в буфер
-
-	blocks=desc_len>>2;//в блоке 4 байта, делим на 4
-	if(desc_len&0xFC)//если есть остаток, то берем еще один блок
-		blocks++;
-	
-	if(blocks>DEVICE_DESC_MAX_LENGTH) //ограничение на количество блоков для комментария
-		blocks=DEVICE_DESC_MAX_LENGTH;
-
-	EEPROM_Write(desc,(unsigned int)blocks,DEVICE_DESC_EEPROM);
-	dev_desc_len=desc_len;
-	EEPROM_Write(&desc_len,1,DEVICE_DESC_LEN_EEPROM);//сохраним длину комментария
-	
-	memcpy(NOTICE,desc,desc_len);//копируем описание в буфер
-	
-	return;
-}
-//-----------------------------------------------------------------------------------------------
-void Restore_Dev_Address_Desc(void)//восстановить из ппзу адрес и информацию об устройстве
-{
-	unsigned int blocks=0;//здесь будет количество блоков, нужных дя сохранения комментария
-	
-	EEPROM_Read(&ADRESS_DEV,1,DEVICE_ADDR_EEPROM);	 //1 блок восстанавливаем адрес из ППЗУ
-
-	if(ADRESS_DEV<1 || ADRESS_DEV>15)
-		ADRESS_DEV=1; 
-
-	EEPROM_Read(DEV_NAME,DEVICE_NAME_LENGTH,DEVICE_NAME_EEPROM); //5 блоков
-    EEPROM_Read(VERSION,DEVICE_VER_LENGTH,DEVICE_VER_EEPROM);
-
-	EEPROM_Read(&dev_desc_len,1,DEVICE_DESC_LEN_EEPROM);//длина описания устройства в байтах
-
-	if(dev_desc_len>DEVICE_DESC_MAX_LENGTH_SYM)
-		dev_desc_len=DEVICE_DESC_MAX_LENGTH_SYM;
-
-	blocks=dev_desc_len>>2;//в блоке 4 байта, делим на 4
-	if(dev_desc_len&0xFC)//если есть остаток, то берем еще один блок
-		blocks++;
-
-	if(blocks>DEVICE_DESC_MAX_LENGTH) //ограничение на количество блоков для комментария	 ???
-		blocks=DEVICE_DESC_MAX_LENGTH;
-
-	EEPROM_Read(NOTICE,(unsigned int)blocks,DEVICE_DESC_EEPROM);
-	return;
-}
-//-----------------------------------------------------------------------------------------------
+//void Store_Dev_Address_Desc(unsigned char addr,void* name,void* ver,void* desc,unsigned char desc_len)//сохранить в ППЗУ новый адрес устройства, имя, версию, описание
+//{
+////небезопасная
+//	
+//	unsigned int blocks=0;//здесь будет количество блоков, нужных дя сохранения комментария
+//	
+//	EEPROM_Write(&addr,1,DEVICE_ADDR_EEPROM);	 //1 блок
+//	EEPROM_Write(name,DEVICE_NAME_LENGTH,DEVICE_NAME_EEPROM); //5 блоков
+//	memcpy(DEV_NAME,name,DEVICE_NAME_LENGTH_SYM);//копируем полученное имя в буфер
+//
+//	EEPROM_Write(ver,DEVICE_VER_LENGTH,DEVICE_VER_EEPROM);		//2 блока
+//	memcpy(VERSION,ver,DEVICE_VER_LENGTH_SYM);//копируем версию в буфер
+//
+//	blocks=desc_len>>2;//в блоке 4 байта, делим на 4
+//	if(desc_len&0xFC)//если есть остаток, то берем еще один блок
+//		blocks++;
+//	
+//	if(blocks>DEVICE_DESC_MAX_LENGTH) //ограничение на количество блоков для комментария
+//		blocks=DEVICE_DESC_MAX_LENGTH;
+//
+//	EEPROM_Write(desc,(unsigned int)blocks,DEVICE_DESC_EEPROM);
+//	dev_desc_len=desc_len;
+//	EEPROM_Write(&desc_len,1,DEVICE_DESC_LEN_EEPROM);//сохраним длину комментария
+//	
+//	memcpy(NOTICE,desc,desc_len);//копируем описание в буфер
+//	
+//	return;
+//}
+////-----------------------------------------------------------------------------------------------
+//void Restore_Dev_Address_Desc(void)//восстановить из ппзу адрес и информацию об устройстве
+//{
+//	unsigned int blocks=0;//здесь будет количество блоков, нужных дя сохранения комментария
+//	
+//	EEPROM_Read(&ADRESS_DEV,1,DEVICE_ADDR_EEPROM);	 //1 блок восстанавливаем адрес из ППЗУ
+//
+//	if(ADRESS_DEV<1 || ADRESS_DEV>15)
+//		ADRESS_DEV=1; 
+//
+//	EEPROM_Read(DEV_NAME,DEVICE_NAME_LENGTH,DEVICE_NAME_EEPROM); //5 блоков
+//    EEPROM_Read(VERSION,DEVICE_VER_LENGTH,DEVICE_VER_EEPROM);
+//
+//	EEPROM_Read(&dev_desc_len,1,DEVICE_DESC_LEN_EEPROM);//длина описания устройства в байтах
+//
+//	if(dev_desc_len>DEVICE_DESC_MAX_LENGTH_SYM)
+//		dev_desc_len=DEVICE_DESC_MAX_LENGTH_SYM;
+//
+//	blocks=dev_desc_len>>2;//в блоке 4 байта, делим на 4
+//	if(dev_desc_len&0xFC)//если есть остаток, то берем еще один блок
+//		blocks++;
+//
+//	if(blocks>DEVICE_DESC_MAX_LENGTH) //ограничение на количество блоков для комментария	 ???
+//		blocks=DEVICE_DESC_MAX_LENGTH;
+//
+//	EEPROM_Read(NOTICE,(unsigned int)blocks,DEVICE_DESC_EEPROM);
+//	return;
+//}
+////-----------------------------------------------------------------------------------------------

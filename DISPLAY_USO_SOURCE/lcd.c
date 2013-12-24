@@ -1,9 +1,10 @@
 #include "lcd.h"
 #include "stdio.h"
-
+#include "proto_uso/proto_uso.h"
 
 
 volatile struct pt pt_display;
+extern unsigned int frame_receieved;
 
 void LCD_Strobe();
 void LCD_WaitWhileBusy();
@@ -48,8 +49,11 @@ void LCD_Initialize()
 	LCD_Strobe();
 	delay(100);
 	LCD_WriteCommand(LCD_CMD_CLEAR);
+	delay(1000);
 	LCD_WriteCommand(LCD_CMD_ON);
+	delay(1000);
 	LCD_WriteCommand(LCD_CMD_ON);
+	delay(1000);
 	LCD_WriteCommand(LCD_4_STR);
 
 	PT_INIT(&pt_display);
@@ -150,10 +154,11 @@ static float channel_1_val=100.55;
 	LCD_WriteString(&string_buf);
 
     channel_1_val+=0.6;
-	sprintf(&string_buf,"Channel 4=%.2f",channel_1_val);
+	sprintf(&string_buf,"Received=%d",frame_receieved);
 	LCD_WriteAC(LCD_4_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
+	Channel_All_Get_Data_Request();
 	
   }
 

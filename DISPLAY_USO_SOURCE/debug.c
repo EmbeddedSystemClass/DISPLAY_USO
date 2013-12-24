@@ -26,11 +26,11 @@ void main(void) //using 0
 	CFG845=0x1;//enable xram
 
 	
-//	ChannelsInit();//инициализаци€ настроек каналов
-//	Protocol_Init();	
+	ChannelsInit();//инициализаци€ настроек каналов
+	Protocol_Init();	
 	Timer1_Initialize(); //таймер шедулера 200√ц	
 
-	//UART_Init();
+	UART_Init();
 	LCD_Initialize();
 
 
@@ -41,7 +41,7 @@ void main(void) //using 0
 
 	while(1)
 	{	
-//		ProtoProcess(&pt_proto);
+		ProtoProcess(&pt_proto);
 
 
 //		WDT_Process(&pt_wdt);	
