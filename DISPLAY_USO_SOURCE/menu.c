@@ -1,10 +1,9 @@
 //#include "globals.h"
 #include "menu.h"
 #include "keyboard.h"
-#include "rtos\core.h"
 #include <stdio.h>
 #include <intrins.h>
-//#include "messages.h"
+
 
 #define DISPLAY_WIDTH 	20
 #define DISPLAY_HEIGHT	4

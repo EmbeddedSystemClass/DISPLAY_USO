@@ -9,17 +9,13 @@ bit LCD_IsBusy();
 // Инициализация LDC
 void LCD_Initialize()
 {
-	//Timer0_Initialize(TIMER0_MODE_16BIT);
-//	ET0 = 1;
+
 		
 	// ждем >= 15 мс
-//	flag_next = 0;
-//	tmr0_init();
-//	Timer0_Run(15);
+
 	
-	delay(15);
-//	while(!flag_next)
-//	{}
+	delay(50);
+
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -27,11 +23,9 @@ void LCD_Initialize()
 	LCD_Strobe();
 
 	// ждем >= 4.1 мс
-//	flag_next = 0;
-//	Timer0_Run(5);
-//	 delay(15);
-//	while(!flag_next)
-//	{}
+
+	 delay(10000);
+
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -39,17 +33,15 @@ void LCD_Initialize()
 	LCD_Strobe();
 
 	// ждем >= 100 мкс
-//	flag_next = 0;
-//	Timer0_Run(1);
-//	delay(15);
-	//while(!flag_next)
-	//{}
+
+	delay(100);
+
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
 	LCD_DATA = 0x30;
 	LCD_Strobe();
-//	delay(15);
+	delay(100);
 	LCD_WriteCommand(LCD_CMD_CLEAR);
 	LCD_WriteCommand(LCD_CMD_ON);
 	LCD_WriteCommand(LCD_CMD_ON);
@@ -59,7 +51,6 @@ void LCD_Initialize()
 // Запись команды
 void LCD_WriteCommand(char cmd)
 {
-	LCD_WaitWhileBusy();
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
 	LCD_DATA = cmd;
@@ -70,7 +61,6 @@ void LCD_WriteCommand(char cmd)
 // Запись символа
 void LCD_WriteData(char ch)
 {
-	LCD_WaitWhileBusy();
 	LCD_RS = RS_DR;
 	LCD_RW = RW_WR;
 	LCD_DATA = ch;
@@ -92,14 +82,7 @@ void LCD_WriteString(char *buf)
 void LCD_Strobe()
 {
 	LCD_E = 1;
-
-	// ждем >= 230 нс
-//	flag_next = 0;
-//	Timer0_Run(1);
-	delay(15);
-//	while(!flag_next)
-//	{}
-
+	delay(280);
 	LCD_E = 0;
 }
 
@@ -112,23 +95,7 @@ bit LCD_IsBusy()
 	return LCD_BF;
 }
 
-// Ожидание, пока LCD занят
-void LCD_WaitWhileBusy()
-{
-//	while(LCD_IsBusy())
-	{}
 
-	delay(20);
-}
-
-// Чтение значения счетчика адреса
-char LCD_ReadAC()
-{
-	LCD_RS = RS_IR;
-	LCD_RW = RW_RD;
-	LCD_Strobe();
-	return LCD_DATA & 0x7F; // 0111 1111
-}
 
 // Установка значения счетчика адреса
 void LCD_WriteAC(unsigned char value)
@@ -139,12 +106,7 @@ void LCD_WriteAC(unsigned char value)
 }
 
 
-void delay(int length)
+void delay(unsigned int time)
 {
- 	int counter=0;
-	while(counter!=4*length/* && !TF0*/)
-	{
-	 counter++;
-	 //TF0=0;
-	}
+	while(time--);
 }

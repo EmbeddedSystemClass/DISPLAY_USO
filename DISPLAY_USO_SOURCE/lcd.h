@@ -38,6 +38,6 @@ void LCD_WriteString(char *buf);
 char LCD_ReadAC();
 void LCD_WriteAC(unsigned char value);
 
-void delay(int);
+void delay(unsigned int);
 
 #endif
