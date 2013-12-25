@@ -132,6 +132,9 @@ void delay(unsigned int time)
 PT_THREAD(DisplayProcess(struct pt *pt))
  {
 static unsigned char string_buf[32];
+static unsigned int P=200,F=32	;
+static unsigned int U_ch2=756,U_ch3=375;
+static float I_ch4=45.6;
 
 //static float channel_1_val=100.55;
 
@@ -143,20 +146,20 @@ static unsigned char string_buf[32];
 	Channel_All_Get_Data_Request();
 	PT_DELAY(pt,50);
 
-	sprintf(&string_buf,"Channel 0=%l8d",channels[0].channel_data);
+	sprintf(&string_buf,"P=%3dkg/cm F=%4dkgs",P,F);
 	LCD_WriteAC(LCD_1_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
 
-	sprintf(&string_buf,"Channel 1=%l8d",channels[1].channel_data);
+	sprintf(&string_buf,"2=%4d  mV",U_ch2);
 	LCD_WriteAC(LCD_2_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
-	sprintf(&string_buf,"Channel 2=%l8d",channels[2].channel_data);
+	sprintf(&string_buf,"3=%4d  mV",U_ch3);
 	LCD_WriteAC(LCD_3_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
-	sprintf(&string_buf,"Channel 3=%l8d",channels[3].channel_data);
+	sprintf(&string_buf,"4=%5.1f mA",I_ch4);
 	LCD_WriteAC(LCD_4_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
