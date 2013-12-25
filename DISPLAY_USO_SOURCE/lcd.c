@@ -1,10 +1,12 @@
 #include "lcd.h"
 #include "stdio.h"
 #include "proto_uso/proto_uso.h"
+#include "channels.h"
 
 
 volatile struct pt pt_display;
 extern unsigned int frame_receieved;
+extern struct Channel xdata channels[CHANNEL_NUMBER];//обобщенная структура каналов
 
 void LCD_Strobe();
 void LCD_WaitWhileBusy();
@@ -131,34 +133,39 @@ PT_THREAD(DisplayProcess(struct pt *pt))
  {
 static unsigned char string_buf[32];
 
-static float channel_1_val=100.55;
+//static float channel_1_val=100.55;
 
   PT_BEGIN(pt);
 
   while(1) 
   {
-  	PT_DELAY(pt,100);
-	channel_1_val+=0.33;
-	sprintf(&string_buf,"Channel 1=%.2f",channel_1_val);
+  	PT_DELAY(pt,50);
+	Channel_All_Get_Data_Request();
+	PT_DELAY(pt,50);
+
+	sprintf(&string_buf,"Channel 0=%l8d",channels[0].channel_data);
 	LCD_WriteAC(LCD_1_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
-	channel_1_val+=0.1;
-	sprintf(&string_buf,"Channel 2=%.2f",channel_1_val);
+
+	sprintf(&string_buf,"Channel 1=%l8d",channels[1].channel_data);
 	LCD_WriteAC(LCD_2_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
-	channel_1_val+=0.22;
-	sprintf(&string_buf,"Channel 3=%.2f",channel_1_val);
+	sprintf(&string_buf,"Channel 2=%l8d",channels[2].channel_data);
 	LCD_WriteAC(LCD_3_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
-    channel_1_val+=0.6;
-	sprintf(&string_buf,"Received=%d",frame_receieved);
+	sprintf(&string_buf,"Channel 3=%l8d",channels[3].channel_data);
 	LCD_WriteAC(LCD_4_STR_ADDR);
 	LCD_WriteString(&string_buf);
 
-	Channel_All_Get_Data_Request();
+//
+//	sprintf(&string_buf,"Received=%5d",frame_receieved);
+//	LCD_WriteAC(LCD_3_STR_ADDR);
+//	LCD_WriteString(&string_buf);
+
+	
 	
   }
 

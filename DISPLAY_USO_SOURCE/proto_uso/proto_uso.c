@@ -34,7 +34,7 @@ volatile unsigned char xdata  TransferBuf[MAX_LENGTH_TR_BUF]={0} ; //буфер перед
 volatile unsigned char xdata  STATE_BYTE=0xC0;//байт состояния устройства
 volatile unsigned char idata symbol=0xFF;//принятый символ
 
-unsigned int frame_receieved=0;
+//unsigned int frame_receieved=0;
 
 volatile struct pt pt_proto;
 //-----------------------------------------------------------------------------------
@@ -590,7 +590,8 @@ void ProtoBufHandling(void) //using 0 //процесс обработки принятого запроса
 
   	case CHANNEL_ALL_GET_DATA_RESP:
 	{
-		
+		  Channel_All_Get_Data_Resp_Handle();
+
 	}
 	break;
 
@@ -719,8 +720,8 @@ void Channel_All_Get_Data_Request(void)//запрос к ведомому усо на получение данн
 //-----------------------------------------------------------------------------------
 void Channel_All_Get_Data_Resp_Handle(void)//обработка ответа усо
 {
-  unsigned char index=8;
-  unsigned char channel_counter=1;
+  unsigned char index=7;
+  unsigned char channel_counter=0;
   unsigned char channel_type=0;
   unsigned char channel_mode=0;
 
@@ -729,54 +730,69 @@ void Channel_All_Get_Data_Resp_Handle(void)//обработка ответа усо
 		channel_type=(RecieveBuf[index+1]>>4)&0xF;
 		channel_mode=(RecieveBuf[index+1])&0xF;
 
-
-	switch(channel_type)
-	{
-		 case CHNL_ADC:  //аналоговый канал
-		 {
-			 switch(channel_mode)
-             {
-				  case CHNL_ADC_FIX_16:
-				  {
-
-				  }
-				  break; 
-
-				  case CHNL_ADC_FIX_24:
-				  {
-
-				  }
-				  break;
-			  }
-		  }
-		  break;
-
-	 	  case CHNL_DOL:	 //ДОЛ
-		  {
-
-		  }
-		  break;
-
-		  case CHNL_FREQ: //частотный
-		  { 
-			  switch(channel_mode)
-		      {	  
-					  
-					  case CHNL_FREQ_COUNT_T:
+	//	frame_receieved++;//кадров принято
+		switch(channel_type)
+		{
+			 case CHNL_ADC:  //аналоговый канал
+			 {
+				 switch(channel_mode)
+	             {
+					  case CHNL_ADC_FIX_16:
 					  {
-
-					  }
-					  break;
-
-					  case CHNL_FREQ_256:
-					  {
-
+							((unsigned char*)(&channels[channel_counter].channel_data))[3]=RecieveBuf[index+2];
+			    			((unsigned char*)(&channels[channel_counter].channel_data))[2]=RecieveBuf[index+3];
+							index+=6;
+//							frame_receieved++;//кадров принято
 					  }
 					  break; 
-			   }
+	
+					  case CHNL_ADC_FIX_24:
+					  {
+						    ((unsigned char*)(&channels[channel_counter].channel_data))[3]=RecieveBuf[index+2];
+							((unsigned char*)(&channels[channel_counter].channel_data))[2]=RecieveBuf[index+3];
+			    			((unsigned char*)(&channels[channel_counter].channel_data))[1]=RecieveBuf[index+4];
+							index+=7;
+					  }
+					  break;
+				  }
+			  }
+			  break;
+	
+		 	  case CHNL_DOL:	 //ДОЛ
+			  {
+					  ((unsigned char*)(&channels[channel_counter].channel_data))[3]=RecieveBuf[index+2];
+					  ((unsigned char*)(&channels[channel_counter].channel_data))[2]=RecieveBuf[index+3];
+			    	  ((unsigned char*)(&channels[channel_counter].channel_data))[1]=RecieveBuf[index+4];
+					  ((unsigned char*)(&channels[channel_counter].channel_data))[0]=RecieveBuf[index+5];
+					  index+=7;
+			  }
+			  break;
+	
+			  case CHNL_FREQ: //частотный
+			  { 
+				  switch(channel_mode)
+			      {	  
+						  
+						  case CHNL_FREQ_COUNT_T:
+						  {
+								((unsigned char*)(&channels[channel_counter].channel_data))[3]=RecieveBuf[index+2];
+								((unsigned char*)(&channels[channel_counter].channel_data))[2]=RecieveBuf[index+3];
+							    index+=5;
+						  }
+						  break;
+	
+						  case CHNL_FREQ_256:
+						  {
+							  ((unsigned char*)(&channels[channel_counter].channel_data))[3]=RecieveBuf[index+2];
+							  ((unsigned char*)(&channels[channel_counter].channel_data))[2]=RecieveBuf[index+3];
+							  index+=5;
+						  }
+						  break; 
+				   }
+			  }
+			  break;		 
 		  }
-		  break;		 
-	  }
+		  channel_counter+=1;
 	}
 }
 //-----------------------------------------------------------------------------------
@@ -817,7 +833,7 @@ PT_THREAD(ProtoProcess(struct pt *pt))
 		}
 		PT_YIELD(pt);//дадим другим процессам время
   //-----------------------------
-  		frame_receieved++;//кадров принято
+  		
   		ProtoBufHandling();//процедура обработки сообщения	
 
 //		if(buf_len==0)//если в буфере пусто
