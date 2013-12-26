@@ -8,6 +8,9 @@ volatile struct pt pt_display;
 extern unsigned int frame_receieved;
 extern struct Channel xdata channels[CHANNEL_NUMBER];//обобщенная структура каналов
 
+
+extern unsigned int key_code;
+
 void LCD_Strobe();
 void LCD_WaitWhileBusy();
 bit LCD_IsBusy();
@@ -152,9 +155,9 @@ static float I_ch4=18.6;
 
   while(1) 
   {
-  	PT_DELAY(pt,50);
+  	PT_DELAY(pt,20);
 	Channel_All_Get_Data_Request();
-	PT_DELAY(pt,50);
+	PT_DELAY(pt,20);
 
 	P= (unsigned int)channels[0].channel_data;
 	if(P>P_MAX)
@@ -207,7 +210,7 @@ static float I_ch4=18.6;
 		I_ch4=I_MAX;
 	}
 
-	sprintf(&string_buf,"4=%4.1f  mA",I_ch4);
+	sprintf(&string_buf,"4=%4.1f  mA KEY=%X",I_ch4,key_code);
 	LCD_WriteAC(LCD_4_STR_ADDR);
 	LCD_WriteString(&string_buf);
 

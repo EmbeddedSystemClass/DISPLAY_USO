@@ -1,8 +1,8 @@
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 #include <ADuC845.h>
+#include "pt/pt.h"
 
-#include "rtos/core.h"
 
 
 #define KEY_UP				0x24
@@ -28,6 +28,11 @@
 sfr KB_PO = 0x80; // P0
 sfr KB_PI = 0x90; // P1
 
+#define KB_ROW		5
+#define	KB_COLUMN	5
+
+#define KB_MASK		0x1F
+
 sbit KB_Out0 = KB_PO^0;
 sbit KB_Out1 = KB_PO^1;
 sbit KB_Out2 = KB_PO^2;
@@ -44,6 +49,7 @@ void KB_Initialize();
 unsigned char KB_ReadKey();
 
 void  KBD_init();
-unsigned char readKey(msg_par par);
+PT_THREAD(KeyboardProcess(struct pt *pt));
+
 
 #endif

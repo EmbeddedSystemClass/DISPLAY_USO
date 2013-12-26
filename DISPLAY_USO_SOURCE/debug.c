@@ -13,8 +13,12 @@
 
 #include "pt/pt.h"
 #include "lcd.h"
+#include "keyboard.h"
 
-extern struct pt pt_proto, pt_wdt, pt_display;
+extern struct pt pt_proto, pt_wdt, pt_display, pt_keyboard;
+
+sbit BIP=P0^7;
+sbit LED=P0^6;
 
  //---------------------------------------
 
@@ -35,14 +39,15 @@ void main(void) //using 0
 
 
 //	WDT_Init(WDT_2000);//включить сторожевой таймер
-	
+	LED=1;
+	BIP=1;
 
 	EA=1;
 
 	while(1)
 	{	
 		ProtoProcess(&pt_proto);
-
+		KeyboardProcess(&pt_keyboard);
 
 //		WDT_Process(&pt_wdt);	
 		DisplayProcess(&pt_display);   
@@ -58,5 +63,6 @@ void Timer1_Interrupt(void) interrupt 3  //таймер шедулера
 	pt_proto.pt_time++;
 	pt_wdt.pt_time++;
 	pt_display.pt_time++;
+	pt_keyboard.pt_time++;
 	return;	
 }
