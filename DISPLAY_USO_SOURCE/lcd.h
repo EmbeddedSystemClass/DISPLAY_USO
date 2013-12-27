@@ -12,20 +12,20 @@
 #define RW_WR 0
 #define RW_RD 1
 
-#define LCD_CMD_CLEAR    0x01
-#define LCD_CMD_OFF      0x08
-#define LCD_CMD_ON       0x0C
-#define LCD_CMD_BLINK    0x0D
-#define LCD_CMD_CURSOR   0x0E
-#define LCD_CMD_CURBLINK 0x0F
-#define LCD_CMD_RIGHT	 0x1C
-#define LCD_CMD_LEFT	 0x18
-#define LCD_CMD_CUR_HOME	 0x2
-#define LCD_4_STR 		0x38
+#define LCD_CMD_CLEAR    	0x01
+#define LCD_CMD_OFF      	0x08
+#define LCD_CMD_ON       	0x0C
+#define LCD_CMD_BLINK    	0x0D
+#define LCD_CMD_CURSOR   	0x0E
+#define LCD_CMD_CURBLINK 	0x0F
+#define LCD_CMD_RIGHT	 	0x1C
+#define LCD_CMD_LEFT	 	0x18
+#define LCD_CMD_CUR_HOME	0x02
+#define LCD_4_STR 			0x38
 
-#define LCD_SET_ADDR	0x80
+#define LCD_SET_ADDR		0x80
 
-sfr LCD_DATA=0xA0; // P2
+sfr  LCD_DATA=0xA0; // P2
 
 sbit LCD_BF=LCD_DATA^7;
 sbit LCD_RS=P3^3; // RS=0 - выбран IR (регистр команд), RS=1 - выбран DR (регистр данных)

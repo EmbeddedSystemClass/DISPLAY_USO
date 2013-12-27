@@ -2,7 +2,7 @@
 #include "keyboard.h"
 #include "lcd.h"
 #include <stdio.h>
-
+#include "menu.h"
 
 unsigned char lastKey,prevKey;
 unsigned char kf1,kf2,kf3;
@@ -123,7 +123,8 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 
 			if((KB_PI&KB_MASK)!=KB_MASK)
 			{
-				key_code_1=((KB_PO&KB_MASK)<<KB_COLUMN)|(KB_PI&KB_MASK);
+				key_code_1=((((unsigned int)KB_PO&KB_MASK)<<8)&0xFF00)|(KB_PI&KB_MASK);//(((KB_PO&KB_MASK)<<KB_COLUMN)&(~KB_MASK))|(KB_PI&KB_MASK);
+				KB_PO|=KB_MASK;
 				break;
 			}
 			KB_PO|=KB_MASK;				
@@ -131,7 +132,7 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 	
 		PT_DELAY(pt,5);
 			
-	//	KB_PI|=KB_MASK;
+		KB_PI&=~KB_MASK;
 		for(i=0;i<KB_COLUMN;i++)
 		{
 			KB_PO|=KB_MASK;
@@ -139,7 +140,8 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 
 			if((KB_PI&KB_MASK)!=KB_MASK)
 			{
-				key_code_2=((KB_PO&KB_MASK)<<KB_COLUMN)|(KB_PI&KB_MASK);
+				key_code_2=((((unsigned int)KB_PO&KB_MASK)<<8)&0xFF00)|(KB_PI&KB_MASK);//(((KB_PO&KB_MASK)<<KB_COLUMN)&(~KB_MASK))|(KB_PI&KB_MASK);
+				KB_PO|=KB_MASK;
 				break;
 			}
 			KB_PO|=KB_MASK;				
@@ -148,14 +150,23 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 		if((key_code_1==key_code_2)&&(key_code_1!=0xFFFF)&&(key_code_1!=last_key_code))
 		{
 			key_code=last_key_code=key_code_1;
-			LED=~LED;				
+		//	LED=~LED;
+			menuKey(key_code_1);				
 		}
 		else
 		{
 		//	key_code=0xFFFF; 
+			
+
+			if((key_code_1==key_code_2)&&(key_code_1!=0xFFFF))
+			{
+				
+			}
+			
 			if((key_code_1==0xFFFF)&&(key_code_2==0xFFFF))
 			{
 				last_key_code=0xFFFF;
+			//	LED=~LED;
 			}
 		}
   }

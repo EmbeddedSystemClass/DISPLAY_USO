@@ -409,11 +409,6 @@
               <FilePath>.\timer3.c</FilePath>
             </File>
             <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\adc.c</FilePath>
-            </File>
-            <File>
               <FileName>preferences.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\preferences.h</FilePath>
@@ -444,36 +439,6 @@
               <FilePath>.\START_AD.A51</FilePath>
             </File>
             <File>
-              <FileName>frequency.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\frequency.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer0.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\timer0.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\timer2.c</FilePath>
-            </File>
-            <File>
-              <FileName>i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>calibrate.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\calibrate\calibrate.c</FilePath>
-            </File>
-            <File>
-              <FileName>ulongsort.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ulongsort.c</FilePath>
-            </File>
-            <File>
               <FileName>pt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\pt\pt.h</FilePath>
@@ -502,6 +467,21 @@
               <FileName>crc_table.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\crc_table.c</FilePath>
+            </File>
+            <File>
+              <FileName>keyboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\keyboard.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\menu.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -3,7 +3,7 @@
 #include "keyboard.h"
 #include <stdio.h>
 #include <intrins.h>
-
+#include "lcd.h"
 
 #define DISPLAY_WIDTH 	20
 #define DISPLAY_HEIGHT	4
@@ -11,7 +11,7 @@
 
 sbit LED=P0^6;
 //char chr=0;
-unsigned char KEY=0;
+unsigned int KEY=0;
 
 bit flag_menu_entry=0;//вошли в меню
 
@@ -74,6 +74,7 @@ MAKE_MENU(m_s4i2,  NULL_ENTRY,m_s4i1,      m_s3i1,     NULL_ENTRY,   MENU_SENS2,
 MAKE_MENU(m_s5i1,  m_s5i2,    NULL_ENTRY,  m_s3i2,     NULL_ENTRY,   MENU_WARM, "Warm");
 MAKE_MENU(m_s5i2,  NULL_ENTRY,m_s5i1,      m_s3i2,     NULL_ENTRY,   MENU_PROCESS, "Process");
 
+unsigned char menuHandler(menuItem* currentMenuItem);
 
 void menuChange(menuItem code* NewMenu)
 {
@@ -83,19 +84,24 @@ void menuChange(menuItem code* NewMenu)
 	selectedMenuItem = NewMenu;
 }
 
-unsigned char dispMenu(msg_par par)
+unsigned char dispMenu(void)
 {
 xdata menuItem code * tempMenu, *tempMenu2;
 
-//	lcd_clrscr(1);
-//LCD_WriteCommand(LCD_CMD_CLEAR);
+
+
 	// первая строка - заголовок. Или пункт меню верхнего уровня
 
 
 	tempMenu = selectedMenuItem;//->Parent;
-	//LCD_WriteCommand(LCD_CMD_CLEAR);
-//	LCD_WriteCommand(LCD_SET_ADDR|0x45);
-//	LCD_WriteString("              ");
+//	if(selectedMenuItem->Select!=0)
+//	{
+//		return 0;
+//	}
+
+    LCD_WriteCommand(LCD_CMD_CLEAR);
+
+	
 	LCD_WriteCommand(LCD_SET_ADDR|0x5);
 	if (tempMenu == &NULL_ENTRY) 
 	{ // мы на верхнем уровне
@@ -108,14 +114,14 @@ xdata menuItem code * tempMenu, *tempMenu2;
 
 		tempMenu2=tempMenu->Previous;
 		if(tempMenu2!=&NULL_ENTRY)
-			LCD_WriteString(CopyToData(tempMenu2->Text));
+			LCD_WriteString(/*CopyToData*/(tempMenu2->Text));
 //-----------------------------------------------------------		
 		LCD_WriteCommand(LCD_SET_ADDR|0x44);
 		LCD_WriteData(0xC9);
 	//	LCD_WriteCommand(LCD_SET_ADDR|0x45);
 	//	LCD_WriteString("              ");
 		LCD_WriteCommand(LCD_SET_ADDR|0x45);
-		LCD_WriteString(CopyToData(tempMenu->Text));
+		LCD_WriteString(/*CopyToData*/(tempMenu->Text));
 //-----------------------------------------------------------
 
 	//	LCD_WriteCommand(LCD_SET_ADDR|0x19);
@@ -125,74 +131,69 @@ xdata menuItem code * tempMenu, *tempMenu2;
 		tempMenu2=tempMenu->Next;
 		if(tempMenu2!=&NULL_ENTRY)
 		{
-			LCD_WriteString(CopyToData(tempMenu2->Text));
+			LCD_WriteString(/*CopyToData*/(tempMenu2->Text));
 
 
 			LCD_WriteCommand(LCD_SET_ADDR|0x59);
 	
 			tempMenu2=tempMenu2->Next;
 			if(tempMenu2!=&NULL_ENTRY)
-				LCD_WriteString(CopyToData(tempMenu2->Text));
+				LCD_WriteString(/*CopyToData*/(tempMenu2->Text));
 		}
 	}
 
-//	lcd_clrscr(2);
-	// Вторая строка - текущий пункт меню
-//	lcd_gotoxy(2,1);
-//	lcd_puts_p((char *)selectedMenuItem->Text);
 
 	return (1);
 }
 
-unsigned char menuKey(msg_par par) 
+unsigned char menuKey(unsigned int key) 
 {
 
-//	LCD_WriteCommand(LCD_SET_ADDR|0x55);
-///	sprintf(buf,"CODE: %X",(char)par);
-//	LCD_WriteString(buf);
+menuItem* sel;
 
-	unsigned char sel;
+
 if(!flag_menu_entry)
 {
-
-	switch (par) 
+ // LED=~LED;
+	switch (key) 
 	{
 		case 0: 
 		{
 			return 1;
+
 		}
 		break;
 	
-		case KEY_UP: 
+		case /*KEY_UP*/KEY_8: 
 		{
 			menuChange(PREVIOUS);
+
 		}
 		break;
 	
-		case KEY_DOWN: 
+		case /*KEY_DOWN*/KEY_2: 
 		{
 			menuChange(NEXT);
+
 				
 		}
 		break;
 	
-		case KEY_RIGHT:
+		case /*KEY_RIGHT*/KEY_6:
 		{
-			LED=!LED;		
+		
 		}
 		break;
 	
-		case KEY_OK:
-		{ // выбор пункта
-				
-	
-				sel = SELECT;
-				if (sel != 0) 
+		case /*KEY_OK*/KEY_5:
+		{ // выбор пункта	
+			//		LED=~LED;				
+				sel = selectedMenuItem->Select;//SELECT;
+				if (selectedMenuItem->Select != 0) 
 				{
-					sendMessage(MSG_MENU_SELECT, sel);
-	
-	//				killHandler(MSG_KEY_PRESS, &menuKey);
-	//				killHandler(MSG_DISP_REFRESH, &dispMenu);
+					//sendMessage(MSG_MENU_SELECT, sel);
+					menuHandler(selectedMenuItem);
+				//	LED=~LED;
 	
 					return (1);
 				} else 
@@ -202,7 +203,7 @@ if(!flag_menu_entry)
 		}
 		break;
 
-		case KEY_LEFT: 
+		case /*KEY_LEFT*/KEY_4: 
 		{ // отмена выбора (возврат)
 			menuChange(PARENT);
 			//LCD_WriteCommand(LCD_CMD_CLEAR);
@@ -211,20 +212,27 @@ if(!flag_menu_entry)
 //			flag_menu_entry=0;
 		}
 		break;
+
+		default:
+		{
+		//	LED=~LED;
+		//	menuChange(CHILD);
+		}
+		
 		
 	} 
 
-	if(par!=0xFF)
+	if(key!=0xFFFF)
    	{
 		LCD_WriteCommand(LCD_CMD_CLEAR);
 		delay(10);
-		dispMenu(0); 
+		dispMenu(); 
 
 	}
 }
 else
 {
-	if(par== KEY_LEFT) 
+	if(key== /*KEY_LEFT*/KEY_4) 
 	{ // отмена выбора (возврат)
 	//	menuChange(PARENT);	
 		flag_menu_entry=0;
@@ -233,15 +241,16 @@ else
 		delay(3);
 		LCD_WriteCommand(LCD_CMD_ON);
 		delay(3);
-		dispMenu(0); 
+		dispMenu(); 
 	}
 	else
 	{
-		 KEY=par;
+		 KEY=key;
 		sel = SELECT;
 		if (sel != 0) 
 		{
-			sendMessage(MSG_MENU_SELECT, sel);
+			//sendMessage(MSG_MENU_SELECT, sel);
+			menuHandler(selectedMenuItem);
 		}
 		 
 	}
@@ -251,11 +260,11 @@ else
 }
 //-----------------------------------------------------
 
-unsigned char menuHandler(msg_par par)	 //обработка меню
+unsigned char menuHandler(menuItem* currentMenuItem)	 //обработка меню
 {
 	flag_menu_entry=1;
 	
-	switch (par) 
+	switch (currentMenuItem->Select) 
 	{
 		case MENU_RESET:
 		{	
@@ -263,7 +272,8 @@ unsigned char menuHandler(msg_par par)	 //обработка меню
 			static  char res_chr=0;
 			LCD_WriteCommand(LCD_CMD_CLEAR);
 		//	LED=!LED;
-			delay(3);
+		//	delay(3);
+			LCD_WriteCommand(LCD_SET_ADDR|0x0);
 			LCD_WriteCommand(LCD_SET_ADDR|0x0);
 		//	delay(10);
 			LCD_WriteString("RESET:");
@@ -305,6 +315,7 @@ unsigned char menuHandler(msg_par par)	 //обработка меню
 			LCD_WriteCommand(LCD_CMD_CLEAR);
 
 			delay(3);
+			LCD_WriteCommand(LCD_SET_ADDR|0x0);
 			LCD_WriteCommand(LCD_SET_ADDR|0x0);
 		//	delay(10);
 			LCD_WriteString("MODE 1:");
@@ -348,6 +359,7 @@ unsigned char menuHandler(msg_par par)	 //обработка меню
 	
 				delay(3);
 				LCD_WriteCommand(LCD_SET_ADDR|0x0);
+				LCD_WriteCommand(LCD_SET_ADDR|0x0);
 				delay(2);
 				LCD_WriteString("MODE 2:");
 				
@@ -372,7 +384,7 @@ unsigned char menuHandler(msg_par par)	 //обработка меню
 					}
 					break;
 
-					case KEY_UP:
+					case /*KEY_UP*/KEY_8:
 					{
 						switch(cur_addr_offset)
 						{
@@ -400,7 +412,7 @@ unsigned char menuHandler(msg_par par)	 //обработка меню
 					}
 					break;
 
-					case KEY_DOWN:
+					case /*KEY_DOWN*/KEY_2:
 					{
 						if(num>0)
 						{
@@ -453,13 +465,14 @@ unsigned char menuHandler(msg_par par)	 //обработка меню
 	
 			delay(3);
 			LCD_WriteCommand(LCD_SET_ADDR|0x0);
+			LCD_WriteCommand(LCD_SET_ADDR|0x0);
 			delay(2);
 			LCD_WriteString("MODE 3:");
 		 	LCD_WriteCommand(LCD_SET_ADDR|0x18);
 
-			buf[0]=(unsigned char)(controller_reg[0]/100)+0x30;
-			buf[1]=(unsigned char)((controller_reg[0]%100)/10)+0x30;
-			buf[2]=(unsigned char)(controller_reg[0]%10)+0x30;
+//			buf[0]=(unsigned char)(controller_reg[0]/100)+0x30;
+//			buf[1]=(unsigned char)((controller_reg[0]%100)/10)+0x30;
+//			buf[2]=(unsigned char)(controller_reg[0]%10)+0x30;
 			buf[3]=0;
 			LCD_WriteString(buf);
 		//	flag_menu_entry=0;
@@ -517,35 +530,26 @@ unsigned char startMenu(void)
  {
 	selectedMenuItem = &m_s1i1;
 
-	dispMenu(0);
-	setHandler(MSG_KEY_PRESS, &menuKey);
-	setHandler(MSG_MENU_SELECT, &menuHandler);
-
-
-	setHandler(DISPLAY_TASK, &DynamicDisplay);
-	setTimer(DISPLAY_TASK, 1, 100);
+	dispMenu();
 	
 	return 0;
 }
 
-void initMenu(void)
-{
-//	lcd_init();
-}
 
-unsigned char* CopyToData( unsigned char code *mas) //копируем массив из code в data
-{
-	static xdata unsigned char data_mas[40];
-	unsigned char i=0;
 
-	while(mas[i]!=0)
-	{
-		data_mas[i]=mas[i];
-		i++;
-	}
-	data_mas[i]=0;
-	return &data_mas;
-}
+//unsigned char* CopyToData( unsigned char code *mas) //копируем массив из code в data
+//{
+//	static xdata unsigned char data_mas[40];
+//	unsigned char i=0;
+//
+//	while(mas[i]!=0)
+//	{
+//		data_mas[i]=mas[i];
+//		i++;
+//	}
+//	data_mas[i]=0;
+//	return &data_mas;
+//}
 //-------------------------------------------------------
 void dispSetScroller(unsigned int num,unsigned int max)//установка значения с полосой
 {
@@ -598,9 +602,9 @@ void DynamicDisplay(void)//динамическое отображение параметра
 				LCD_WriteString("MODBUS REG");
 				LCD_WriteCommand(LCD_SET_ADDR|0x1A);
 				delay(3);
-				sprintf(buf,"Register: %u     ",controller_reg[0]);
+//				sprintf(buf,"Register: %u     ",controller_reg[0]);
 				LCD_WriteString(buf);
-				last=controller_reg[0];
+//				last=controller_reg[0];
 			}
 		}
 		break;

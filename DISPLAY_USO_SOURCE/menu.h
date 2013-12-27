@@ -1,10 +1,9 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
-#include "rtos/core.h"
-#include "lcd.h"
-#include "mb_ascii/proto_ascii.h"
-extern unsigned int xdata  controller_reg[REG_ADDR_MAX];  //ргистры хранения значений modbus
+
+
+
 
 enum {
     MENU_CANCEL=1,
@@ -22,10 +21,11 @@ enum {
 
 unsigned char startMenu(void);
 void initMenu(void);
-unsigned char dispMenu(msg_par par);
+unsigned char dispMenu(void);
 unsigned char* CopyToData(unsigned char code *mas); //копируем массив из code в data
 
 void dispSetScroller(unsigned int num,unsigned int max);//установка значения с полосой
 void DynamicDisplay(void);//динамическое отображение параметра
+unsigned char menuKey(unsigned int key);
 
 #endif

@@ -5,22 +5,23 @@
 
 
 
-#define KEY_UP				0x24
-#define KEY_DOWN			0xA
-#define KEY_RIGHT			0x14
-#define KEY_LEFT			0x21
-#define KEY_OK				0x12
-#define KEY_0				0xC3
-#define KEY_1				0x85
-#define KEY_2				0x86
-#define KEY_3				0x84
-#define KEY_4				0x9//(0x9)
-#define KEY_5				0xA//(A)
-#define KEY_6				0xC//(C0)
-#define KEY_7				0x11
-#define KEY_8				0x12
-#define KEY_9				0x14
-#define KEY_POINT			0xC2
+#define KEY_UP				0xF1D7//(бо)
+#define KEY_DOWN			0x1D17//(X)
+#define KEY_RIGHT			0x170F//()])
+#define KEY_LEFT			0x1717//([()
+#define KEY_OK				0xF17E//(F)
+#define KEY_ESC				0xF1EE//(C)
+#define KEY_0				0x1E1E
+#define KEY_1				0x1D1E
+#define KEY_2				0x1D1D
+#define KEY_3				0x1D1B
+#define KEY_4				0x1B1E
+#define KEY_5				0x1B1D
+#define KEY_6				0x1B1B
+#define KEY_7				0x171E
+#define KEY_8				0x171D
+#define KEY_9				0x171B
+#define KEY_POINT			0x1E1D
 
 
 //#define KB_MASK 0xE0 // 1110 0000
