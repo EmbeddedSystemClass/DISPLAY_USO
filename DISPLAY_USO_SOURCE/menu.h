@@ -1,6 +1,6 @@
 #ifndef _MENU_H_
 #define _MENU_H_
-
+#include "pt/pt.h"
 
 
 
@@ -27,5 +27,6 @@ unsigned char* CopyToData(unsigned char code *mas); //копируем массив из code в 
 void dispSetScroller(unsigned int num,unsigned int max);//установка значения с полосой
 void DynamicDisplay(void);//динамическое отображение параметра
 unsigned char menuKey(unsigned int key);
+PT_THREAD(DisplayProcess(struct pt *pt));
 
 #endif

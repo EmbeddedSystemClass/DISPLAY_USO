@@ -13,6 +13,7 @@
 
 #include "pt/pt.h"
 #include "lcd.h"
+#include "menu.h"
 #include "keyboard.h"
 
 extern struct pt pt_proto, pt_wdt, pt_display, pt_keyboard;

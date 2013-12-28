@@ -39,7 +39,7 @@ void LCD_WriteString(char *buf);
 char LCD_ReadAC();
 void LCD_WriteAC(unsigned char value);
 
-PT_THREAD(DisplayProcess(struct pt *pt));
+//PT_THREAD(DisplayProcess(struct pt *pt));
 
 void delay(unsigned int);
 

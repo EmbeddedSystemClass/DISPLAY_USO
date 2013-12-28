@@ -5,9 +5,9 @@
 #include "menu.h"
 
 
-volatile struct pt pt_display;
-extern unsigned int frame_receieved;
-extern struct Channel xdata channels[CHANNEL_NUMBER];//обобщенная структура каналов
+//volatile struct pt pt_display;
+//extern unsigned int frame_receieved;
+//extern struct Channel xdata channels[CHANNEL_NUMBER];//обобщенная структура каналов
 
 
 extern unsigned int key_code;
@@ -20,14 +20,10 @@ bit  LCD_IsBusy();
 
 // Инициализация LDC
 void LCD_Initialize()
-{
-
-		
+{		
 	// ждем >= 15 мс
-
 	
 	delay(50);
-
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -36,8 +32,7 @@ void LCD_Initialize()
 
 	// ждем >= 4.1 мс
 
-	 delay(1000);
-
+	delay(1000);
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -47,7 +42,6 @@ void LCD_Initialize()
 	// ждем >= 100 мкс
 
 	delay(100);
-
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -62,7 +56,7 @@ void LCD_Initialize()
 	delay(1000);
 	LCD_WriteCommand(LCD_4_STR);
 
-	PT_INIT(&pt_display);
+	
 
 	startMenu();
 }
@@ -74,7 +68,7 @@ void LCD_WriteCommand(char cmd)
 	LCD_RW = RW_WR;
 	LCD_DATA = cmd;
 	LCD_Strobe();
-//	delay(15);
+	delay(15);
 }
 
 // Запись символа
@@ -84,7 +78,7 @@ void LCD_WriteData(char ch)
 	LCD_RW = RW_WR;
 	LCD_DATA = ch;
 	LCD_Strobe();
-//	delay(15);
+	delay(15);
 }
 
 // Запись строки символов
@@ -101,7 +95,7 @@ void LCD_WriteString(char *buf)
 void LCD_Strobe()
 {
 	LCD_E = 1;
-	delay(280);
+	delay(500);
 	LCD_E = 0;
 }
 
@@ -130,97 +124,97 @@ void delay(unsigned int time)
 	while(time--);
 }
 
-#define LCD_1_STR_ADDR	0x00
-#define LCD_2_STR_ADDR	0x40
-#define LCD_3_STR_ADDR	0x14
-#define LCD_4_STR_ADDR	0x54
-
-
-#define P_MAX 999
-#define F_MAX 9999
-#define U_MAX 9999
-#define I_MAX 40.0	
-
-#define K_P	18.413	//коэффициенты F=K*P+B
-#define B_P	-5.674
-
-PT_THREAD(DisplayProcess(struct pt *pt))
- {
-static unsigned char string_buf[32];
-static unsigned int P=200;
-static int F=32;
-static unsigned int U_ch2=756,U_ch3=375;
-static float I_ch4=18.6;
-
-//static float channel_1_val=100.55;
-
-  PT_BEGIN(pt);
-
-  while(1) 
-  {
-  	PT_DELAY(pt,20);
-	Channel_All_Get_Data_Request();
-	PT_DELAY(pt,20);
-
-//	dispMenu();
-
-//	P= (unsigned int)channels[0].channel_data;
-//	if(P>P_MAX)
-//	{
-//		P=P_MAX;
-//	}
+//#define LCD_1_STR_ADDR	0x00
+//#define LCD_2_STR_ADDR	0x40
+//#define LCD_3_STR_ADDR	0x14
+//#define LCD_4_STR_ADDR	0x54
 //
 //
-//	F=(unsigned int)((float)P*K_P+(B_P));
+//#define P_MAX 999
+//#define F_MAX 9999
+//#define U_MAX 9999
+//#define I_MAX 40.0	
 //
-//	if(F<0)
-//	{
-//		F=0;
-//	}
+//#define K_P	18.413	//коэффициенты F=K*P+B
+//#define B_P	-5.674
 //
-//	if(F>F_MAX)
-//	{
-//		F=F_MAX;	
-//	}
+//PT_THREAD(DisplayProcess(struct pt *pt))
+// {
+//static unsigned char string_buf[32];
+//static unsigned int P=200;
+//static int F=32;
+//static unsigned int U_ch2=756,U_ch3=375;
+//static float I_ch4=18.6;
 //
-//	sprintf(&string_buf,"P=%3dkg/cm F=%4dkgs",P,F);
-//	LCD_WriteAC(LCD_1_STR_ADDR);
-//	LCD_WriteString(&string_buf);
+////static float channel_1_val=100.55;
 //
+//  PT_BEGIN(pt);
 //
-//	U_ch2=(unsigned int)(channels[1].channel_data*10000/0xFFFF);
-//	if(U_ch2>U_MAX)
-//	{
-//		U_ch2=U_MAX;
-//	}
+//  while(1) 
+//  {
+//  	PT_DELAY(pt,20);
+//	Channel_All_Get_Data_Request();
+//	PT_DELAY(pt,20);
 //
-//	sprintf(&string_buf,"2=%4d  mV",U_ch2);
-//	LCD_WriteAC(LCD_2_STR_ADDR);
-//	LCD_WriteString(&string_buf);
+////	dispMenu();
 //
-//	U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
-//	if(U_ch3>U_MAX)
-//	{
-//		U_ch3=U_MAX;
-//	}
+////	P= (unsigned int)channels[0].channel_data;
+////	if(P>P_MAX)
+////	{
+////		P=P_MAX;
+////	}
+////
+////
+////	F=(unsigned int)((float)P*K_P+(B_P));
+////
+////	if(F<0)
+////	{
+////		F=0;
+////	}
+////
+////	if(F>F_MAX)
+////	{
+////		F=F_MAX;	
+////	}
+////
+////	sprintf(&string_buf,"P=%3dkg/cm F=%4dkgs",P,F);
+////	LCD_WriteAC(LCD_1_STR_ADDR);
+////	LCD_WriteString(&string_buf);
+////
+////
+////	U_ch2=(unsigned int)(channels[1].channel_data*10000/0xFFFF);
+////	if(U_ch2>U_MAX)
+////	{
+////		U_ch2=U_MAX;
+////	}
+////
+////	sprintf(&string_buf,"2=%4d  mV",U_ch2);
+////	LCD_WriteAC(LCD_2_STR_ADDR);
+////	LCD_WriteString(&string_buf);
+////
+////	U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
+////	if(U_ch3>U_MAX)
+////	{
+////		U_ch3=U_MAX;
+////	}
+////
+////	sprintf(&string_buf,"3=%4d  mV",U_ch3);
+////	LCD_WriteAC(LCD_3_STR_ADDR);
+////	LCD_WriteString(&string_buf);
+////
+////
+//// 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
+////	if(I_ch4>I_MAX)
+////	{
+////		I_ch4=I_MAX;
+////	}
+////
+////	sprintf(&string_buf,"4=%4.1f  mA KEY=%X",I_ch4,key_code);
+////	LCD_WriteAC(LCD_4_STR_ADDR);
+////	LCD_WriteString(&string_buf);
+//	
+//	
+//  }
 //
-//	sprintf(&string_buf,"3=%4d  mV",U_ch3);
-//	LCD_WriteAC(LCD_3_STR_ADDR);
-//	LCD_WriteString(&string_buf);
-//
-//
-// 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
-//	if(I_ch4>I_MAX)
-//	{
-//		I_ch4=I_MAX;
-//	}
-//
-//	sprintf(&string_buf,"4=%4.1f  mA KEY=%X",I_ch4,key_code);
-//	LCD_WriteAC(LCD_4_STR_ADDR);
-//	LCD_WriteString(&string_buf);
-	
-	
-  }
-
-  PT_END(pt);
- }
+//  PT_END(pt);
+// }
