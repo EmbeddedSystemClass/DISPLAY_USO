@@ -1,6 +1,6 @@
 #include "proto_uso.h"
 #include "calibrate\calibrate.h"
-#include "i2c.h"
+//#include "i2c.h"
 #include <intrins.h>
 #include "crc_table.h"
 #include "channels.h"
@@ -10,9 +10,9 @@
 sbit DE_RE=P3^5;
 
 //-----------------------------------------------------------------------------------
-volatile unsigned char xdata DEV_NAME[DEVICE_NAME_LENGTH_SYM] ="<<uUSO_2>>"; //имя устройства
-volatile unsigned char xdata NOTICE[DEVICE_DESC_MAX_LENGTH_SYM]="<-- GEOSPHERA_2012 -->";//примечание 	
-volatile unsigned char xdata VERSION[DEVICE_VER_LENGTH_SYM] ="\x30\x30\x30\x30\x31";	// версия программы ПЗУ	не больше 5 байт
+//volatile unsigned char xdata DEV_NAME[DEVICE_NAME_LENGTH_SYM] ="<<uUSO_2>>"; //имя устройства
+//volatile unsigned char xdata NOTICE[DEVICE_DESC_MAX_LENGTH_SYM]="<-- GEOSPHERA_2012 -->";//примечание 	
+//volatile unsigned char xdata VERSION[DEVICE_VER_LENGTH_SYM] ="\x30\x30\x30\x30\x31";	// версия программы ПЗУ	не больше 5 байт
 
 volatile unsigned char xdata ADRESS_DEV=0x1;
 
@@ -45,7 +45,7 @@ union //объединение для конвертирования char->long
 }
 sym_8_to_float;
 
-extern unsigned char idata i2c_buffer[6];
+//extern unsigned char idata i2c_buffer[6];
 extern unsigned char channel_number;//количество каналов
 
 //-----------------------------------------------------------------------------------
@@ -337,7 +337,7 @@ void Protocol_Init(void) //using 0
 unsigned char Channel_Set_Reset_State_Flags(void) //using 0 //	Установка/Сброс флагов состояния 
 {
 	STATE_BYTE=0x40;
-	i2c_buffer[0]=0x12;//сбросим флаг инициализации ведомого
+//	i2c_buffer[0]=0x12;//сбросим флаг инициализации ведомого
 	return	Request_Error(FR_SUCCESFUL);//ошибки нет, подтверждение
 }
 //-----------------------------------------------------------------------------

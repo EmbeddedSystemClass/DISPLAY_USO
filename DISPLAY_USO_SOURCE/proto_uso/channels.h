@@ -40,17 +40,23 @@ struct Channel
 	} settings;
 	
 	unsigned long channel_data;		  // значение канала
-	unsigned long channel_data_calibrate;//значение канала калиброванное
+/*	unsigned long*/float  channel_data_calibrate;//значение канала калиброванное
 
 	union
 	{
 		struct
 		{
 			unsigned char calibrate;//флаг калиброванности канала
-			float K;//
-			float C;//y=kx+c		
+//			float K;//
+//			float C;//y=kx+c
+
+			unsigned long  adc_lo;
+			float 		   cal_lo;
+			
+			unsigned long  adc_hi;
+			float 		   cal_hi;		
 		} cal;
-		unsigned long serialize[3];//сериализованная часть структуры
+		unsigned long serialize[5];//сериализованная часть структуры
 	} calibrate;
 	
 } ;

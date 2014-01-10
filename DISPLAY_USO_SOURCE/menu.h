@@ -41,6 +41,20 @@ enum {
     MENU_DEV_SET
 };
 
+#define LCD_1_STR_ADDR	0x00
+#define LCD_2_STR_ADDR	0x40
+#define LCD_3_STR_ADDR	0x14
+#define LCD_4_STR_ADDR	0x54
+
+
+#define P_MAX 999
+#define F_MAX 9999
+#define U_MAX 9999
+#define I_MAX 40.0	
+
+#define K_P	18.413	//коэффициенты F=K*P+B
+#define B_P	-5.674
+
 unsigned char startMenu(void);
 void initMenu(void);
 unsigned char dispMenu(void);
@@ -48,7 +62,7 @@ unsigned char* CopyToData(unsigned char code *mas); //копируем массив из code в 
 
 void dispSetScroller(unsigned int num,unsigned int max);//установка значения с полосой
 void DynamicDisplay(void);//динамическое отображение параметра
-unsigned char menuKey(unsigned int key);
+unsigned char menuKey(unsigned char key);
 PT_THREAD(DisplayProcess(struct pt *pt));
 
 #endif

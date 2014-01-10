@@ -90,27 +90,22 @@ MAKE_MENU(m_s2i12, m_s2i13,	  m_s2i11,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FR
 MAKE_MENU(m_s2i13, NULL_ENTRY,m_s2i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ_HI_SET, 	"Channel freqhi set.");
 
 // подменю Калибровка каналов
-MAKE_MENU(m_s3i1,  m_s3i2,    NULL_ENTRY,  m_s1i1,     NULL_ENTRY,   MENU_CHN1_CAL, 		"Channel 1 CAL.");
-MAKE_MENU(m_s3i2,  m_s3i3,    m_s3i1,      m_s1i1,     NULL_ENTRY,   MENU_CHN2_CAL, 		"Channel 2 CAL.");
-MAKE_MENU(m_s3i3,  m_s3i4,	  m_s3i2,      m_s1i1,     NULL_ENTRY,   MENU_CHN3_CAL, 		"Channel 3 CAL.");
-MAKE_MENU(m_s3i4,  m_s3i5,	  m_s3i3,      m_s1i1,     NULL_ENTRY,   MENU_CHN4_CAL, 		"Channel 4 CAL.");
-MAKE_MENU(m_s3i5,  m_s3i6,	  m_s3i4,      m_s1i1,     NULL_ENTRY,   MENU_CHN5_CAL, 		"Channel 5 CAL.");
-MAKE_MENU(m_s3i6,  m_s3i7,	  m_s3i5,      m_s1i1,     NULL_ENTRY,   MENU_CHN6_CAL, 		"Channel 6 CAL.");
-MAKE_MENU(m_s3i7,  m_s3i8,	  m_s3i6,      m_s1i1,     NULL_ENTRY,   MENU_CHN7_CAL, 		"Channel 7 CAL.");
-MAKE_MENU(m_s3i8,  m_s3i9,	  m_s3i7,      m_s1i1,     NULL_ENTRY,   MENU_CHN8_CAL, 		"Channel 8 CAL.");
-MAKE_MENU(m_s3i9,  m_s3i10,	  m_s3i8,      m_s1i1,     NULL_ENTRY,   MENU_CHN_DOL_CAL, 		"Channel dol CAL.");
-MAKE_MENU(m_s3i10, m_s3i11,	  m_s3i9,      m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ1_CAL, 	"Channel freq1 CAL.");
-MAKE_MENU(m_s3i11, m_s3i12,	  m_s3i10,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ2_CAL, 	"Channel freq2 CAL.");
-MAKE_MENU(m_s3i12, m_s3i13,	  m_s3i11,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ3_CAL, 	"Channel freq3 CAL.");
-MAKE_MENU(m_s3i13, NULL_ENTRY,m_s3i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ_HI_CAL, 	"Channel freqhi CAL.");
+MAKE_MENU(m_s3i1,  m_s3i2,    NULL_ENTRY,  m_s1i1,     NULL_ENTRY,   MENU_CHN1_CAL, 		"Channel 1 cal.");
+MAKE_MENU(m_s3i2,  m_s3i3,    m_s3i1,      m_s1i1,     NULL_ENTRY,   MENU_CHN2_CAL, 		"Channel 2 cal.");
+MAKE_MENU(m_s3i3,  m_s3i4,	  m_s3i2,      m_s1i1,     NULL_ENTRY,   MENU_CHN3_CAL, 		"Channel 3 cal.");
+MAKE_MENU(m_s3i4,  m_s3i5,	  m_s3i3,      m_s1i1,     NULL_ENTRY,   MENU_CHN4_CAL, 		"Channel 4 cal.");
+MAKE_MENU(m_s3i5,  m_s3i6,	  m_s3i4,      m_s1i1,     NULL_ENTRY,   MENU_CHN5_CAL, 		"Channel 5 cal.");
+MAKE_MENU(m_s3i6,  m_s3i7,	  m_s3i5,      m_s1i1,     NULL_ENTRY,   MENU_CHN6_CAL, 		"Channel 6 cal.");
+MAKE_MENU(m_s3i7,  m_s3i8,	  m_s3i6,      m_s1i1,     NULL_ENTRY,   MENU_CHN7_CAL, 		"Channel 7 cal.");
+MAKE_MENU(m_s3i8,  m_s3i9,	  m_s3i7,      m_s1i1,     NULL_ENTRY,   MENU_CHN8_CAL, 		"Channel 8 cal.");
+MAKE_MENU(m_s3i9,  m_s3i10,	  m_s3i8,      m_s1i1,     NULL_ENTRY,   MENU_CHN_DOL_CAL, 		"Channel dol cal.");
+MAKE_MENU(m_s3i10, m_s3i11,	  m_s3i9,      m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ1_CAL, 	"Channel freq1 cal.");
+MAKE_MENU(m_s3i11, m_s3i12,	  m_s3i10,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ2_CAL, 	"Channel freq2 cal.");
+MAKE_MENU(m_s3i12, m_s3i13,	  m_s3i11,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ3_CAL, 	"Channel freq3 cal.");
+MAKE_MENU(m_s3i13, NULL_ENTRY,m_s3i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ_HI_CAL, 	"Channel freqhi cal.");
 
-//// подменю Давление
-//MAKE_MENU(m_s4i1,  m_s4i2,    NULL_ENTRY,  m_s3i1,     NULL_ENTRY,   MENU_SENS1, "Sensor 1");
-//MAKE_MENU(m_s4i2,  NULL_ENTRY,m_s4i1,      m_s3i1,     NULL_ENTRY,   MENU_SENS2, "Sensor 2");
-//
-//// подменю Время
-//MAKE_MENU(m_s5i1,  m_s5i2,    NULL_ENTRY,  m_s3i2,     NULL_ENTRY,   MENU_WARM, "Warm");
-//MAKE_MENU(m_s5i2,  NULL_ENTRY,m_s5i1,      m_s3i2,     NULL_ENTRY,   MENU_PROCESS, "Process");
+
+unsigned char string_buf[32];
 
 unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key);	 //обработка меню
 
@@ -134,8 +129,6 @@ xdata menuItem code * tempMenu, *tempMenu2;
 
     LCD_WriteCommand(LCD_CMD_CLEAR);
 
-	
-//	LCD_WriteCommand(LCD_SET_ADDR|0x1);
 	if ((tempMenu == &m_s0i1)||(tempMenu == &m_s0i2)||(tempMenu == &m_s0i3)||(tempMenu == &m_s0i4)) 
 	{ // мы на верхнем уровне
 		dynamic_disp= DYN_DISPALY_ON;
@@ -143,136 +136,136 @@ xdata menuItem code * tempMenu, *tempMenu2;
 	else 
 	{
 		dynamic_disp=DYN_NOT_DISPLAY;
-	//	LCD_WriteCommand(LCD_SET_ADDR|0x5);
-	//	LCD_WriteString("              ");
+
+		LCD_WriteCommand(LCD_SET_ADDR|0x1);
 		LCD_WriteCommand(LCD_SET_ADDR|0x1);
 
 		tempMenu2=tempMenu->Previous;
 		if(tempMenu2!=&NULL_ENTRY)
 		{
-			LCD_WriteString(/*CopyToData*/(tempMenu2->Text));
+			LCD_WriteString(tempMenu2->Text);
 		}
-//-----------------------------------------------------------		
+		
 		LCD_WriteCommand(LCD_SET_ADDR|0x40);
 		LCD_WriteData(0xC9);
-	//	LCD_WriteCommand(LCD_SET_ADDR|0x45);
-	//	LCD_WriteString("              ");
-		LCD_WriteCommand(LCD_SET_ADDR|0x41);
-		LCD_WriteString(/*CopyToData*/(tempMenu->Text));
-//-----------------------------------------------------------
 
-	//	LCD_WriteCommand(LCD_SET_ADDR|0x19);
-	//	LCD_WriteString("              ");
+		LCD_WriteCommand(LCD_SET_ADDR|0x41);
+		LCD_WriteString(tempMenu->Text);
+
+
 		LCD_WriteCommand(LCD_SET_ADDR|0x15);
 
 		tempMenu2=tempMenu->Next;
 		if(tempMenu2!=&NULL_ENTRY)
 		{
-			LCD_WriteString(/*CopyToData*/(tempMenu2->Text));
+			LCD_WriteString(tempMenu2->Text);
 
 			LCD_WriteCommand(LCD_SET_ADDR|0x55);
 	
 			tempMenu2=tempMenu2->Next;
 			if(tempMenu2!=&NULL_ENTRY)
-		    LCD_WriteString(/*CopyToData*/(tempMenu2->Text));
+		    LCD_WriteString(tempMenu2->Text);
 		}
 	}
-
 	return (1);
 }
 
-unsigned char menuKey(unsigned int key) 
+unsigned char menuKey(unsigned char key) 
 {
+	menuItem* sel;
 
-menuItem* sel;
 
-//KEY=key;
-if(!flag_menu_entry)
-{
-	switch (key) 
+	if(!flag_menu_entry)
 	{
-		case 0: 
+		switch (key) 
 		{
-			return 1;
-		}
-		break;
+			case 0: 
+			{
+				return 1;
+			}
+			break;
+		
+			case '[': 
+			{
+				menuChange(PREVIOUS);
 	
-		case /*KEY_UP*/KEY_8: 
-		{
-			menuChange(PREVIOUS);
-
-		}
-		break;
+			}
+			break;
+		
+			case ']': 
+			{
+				menuChange(NEXT);			
+			}
+			break;
+		
+			case 'x':
+			{
+			  _nop_();
+			}
+			break;
+		
+			case 'F':
+			{ // выбор пункта					
+					sel = selectedMenuItem->Select;//SELECT;
+					if (selectedMenuItem->Select != 0) 
+					{
+						menuHandler(selectedMenuItem,key);	
+						return (1);
+					} 
+					else 
+					{
+						menuChange(CHILD);
+					}
+			}
+			break;
 	
-		case /*KEY_DOWN*/KEY_2: 
-		{
-			menuChange(NEXT);			
-		}
-		break;
+			case 'C': 
+			{ // отмена выбора (возврат)
+				menuChange(PARENT);
+			}
+			break;
 	
-		case /*KEY_RIGHT*/KEY_6:
-		{
-		  _nop_();
-		}
-		break;
+			default:
+			{
 	
-		case /*KEY_OK*/KEY_5:
-		{ // выбор пункта					
-				sel = selectedMenuItem->Select;//SELECT;
-				if (selectedMenuItem->Select != 0) 
-				{
-					menuHandler(selectedMenuItem,key);	
-					return (1);
-				} 
-				else 
-				{
-					menuChange(CHILD);
-				}
+			}		
+		} 
+	
+		if(key!=0)
+	   	{
+			LCD_WriteCommand(LCD_CMD_CLEAR);
+			delay(10);
+			dispMenu(); 
 		}
-		break;
-
-		case /*KEY_LEFT*/KEY_4: 
-		{ // отмена выбора (возврат)
-			menuChange(PARENT);
-		}
-		break;
-
-		default:
-		{
-
-		}		
-	} 
-
-	if(key!=0xFFFF)
-   	{
-		LCD_WriteCommand(LCD_CMD_CLEAR);
-		delay(10);
-		dispMenu(); 
-	}
-}
-else
-{
-	if(key== /*KEY_LEFT*/KEY_4) 
-	{ // отмена выбора (возврат)
-
-		flag_menu_entry=0;
-		dynamic_disp=0;
-		LCD_WriteCommand(LCD_CMD_CLEAR);
-		delay(3);
-		LCD_WriteCommand(LCD_CMD_ON);
-		delay(3);
-		dispMenu(); 
 	}
 	else
 	{
-		sel = SELECT;
-		if (sel != 0) 
-		{
-			menuHandler(selectedMenuItem,key);
+		if(key== '4') 
+		{ // отмена выбора (возврат)
+	
+			flag_menu_entry=0;
+			dynamic_disp=0;
+			LCD_WriteCommand(LCD_CMD_CLEAR);
+			delay(3);
+			LCD_WriteCommand(LCD_CMD_ON);
+			delay(3);
+			dispMenu(); 
 		}
-		 
+		else
+		{
+			sel = SELECT;
+			if (sel != 0) 
+			{
+				menuHandler(selectedMenuItem,key);
+			}
+			 
+		}
 	}
-}
+
+//	LCD_WriteCommand(LCD_CMD_CLEAR);
+//    sprintf(&string_buf,"KEY=%c",key);
+//   	LCD_WriteAC(LCD_2_STR_ADDR);
+//	LCD_WriteString(&string_buf);
 
 	return (1);
 }
@@ -286,43 +279,43 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 	{
 		case MENU_DEV_SET:
 		{	
-			#define MAX 100
-			static  char res_chr=0;
-			LCD_WriteCommand(LCD_CMD_CLEAR);
-		//	LED=!LED;
-		//	delay(3);
-			LCD_WriteCommand(LCD_SET_ADDR|0x0);
-			LCD_WriteCommand(LCD_SET_ADDR|0x0);
-		//	delay(10);
-			LCD_WriteString("RESET:");
-			
-			switch(key)
-			{
-				case KEY_9:
-				{
-					res_chr++;
-				}
-				break;
-
-				case KEY_7:
-				{
-					res_chr--;
-				}
-				break;
-
-				case KEY_0:
-				{
-					res_chr=0;
-				}
-				break;
-			}
-			
-			if(res_chr>MAX)
-				res_chr=MAX;
-			if(res_chr<0)
-				res_chr=0;
-
-			dispSetScroller(res_chr,MAX);	
+//			#define MAX 100
+//			static  char res_chr=0;
+//			LCD_WriteCommand(LCD_CMD_CLEAR);
+//		//	LED=!LED;
+//		//	delay(3);
+//			LCD_WriteCommand(LCD_SET_ADDR|0x0);
+//			LCD_WriteCommand(LCD_SET_ADDR|0x0);
+//		//	delay(10);
+//			LCD_WriteString("RESET:");
+//			
+//			switch(key)
+//			{
+//				case KEY_9:
+//				{
+//					res_chr++;
+//				}
+//				break;
+//
+//				case KEY_7:
+//				{
+//					res_chr--;
+//				}
+//				break;
+//
+//				case KEY_0:
+//				{
+//					res_chr=0;
+//				}
+//				break;
+//			}
+//			
+//			if(res_chr>MAX)
+//				res_chr=MAX;
+//			if(res_chr<0)
+//				res_chr=0;
+//
+//			dispSetScroller(res_chr,MAX);	
 		}
 		break; 
 	//----------------------------------------------
@@ -550,22 +543,6 @@ unsigned char startMenu(void)
 	PT_INIT(&pt_display);
 	return 0;
 }
-
-
-
-//unsigned char* CopyToData( unsigned char code *mas) //копируем массив из code в data
-//{
-//	static xdata unsigned char data_mas[40];
-//	unsigned char i=0;
-//
-//	while(mas[i]!=0)
-//	{
-//		data_mas[i]=mas[i];
-//		i++;
-//	}
-//	data_mas[i]=0;
-//	return &data_mas;
-//}
 //-------------------------------------------------------
 void dispSetScroller(unsigned int num,unsigned int max)//установка значения с полосой
 {
@@ -594,69 +571,13 @@ void dispSetScroller(unsigned int num,unsigned int max)//установка значения с по
 
 	return;
 }
-//-------------------------------------------------------
-//void DynamicDisplay(void)//динамическое отображение параметра
-//{
-////	static volatile unsigned int k=0;
-//	static volatile unsigned int last=0;
-//	switch(dynamic_disp)
-//	{
-//		case 0:
-//		{
-//			_nop_();
-//		}
-//		break;
-//
-//		case 1:
-//		{
-//		//	k++;
-//		//	LCD_WriteCommand(LCD_CMD_CLEAR);
-//		//	delay(3);
-//		//	if(last!=controller_reg[0])
-//			{
-//				LCD_WriteCommand(LCD_SET_ADDR|0x5);
-//				LCD_WriteString("MODBUS REG");
-//				LCD_WriteCommand(LCD_SET_ADDR|0x1A);
-//				delay(3);
-////				sprintf(buf,"Register: %u     ",controller_reg[0]);
-//				LCD_WriteString(buf);
-////				last=controller_reg[0];
-//			}
-//		}
-//		break;
-//
-//		case 2:
-//		{
-//			_nop_();
-//		}
-//		break;
-//
-//		default:
-//		{
-//			_nop_();
-//		}
-//	}	
-//	
-//	return;
-//}
-
-#define LCD_1_STR_ADDR	0x00
-#define LCD_2_STR_ADDR	0x40
-#define LCD_3_STR_ADDR	0x14
-#define LCD_4_STR_ADDR	0x54
 
 
-#define P_MAX 999
-#define F_MAX 9999
-#define U_MAX 9999
-#define I_MAX 40.0	
 
-#define K_P	18.413	//коэффициенты F=K*P+B
-#define B_P	-5.674
 
 PT_THREAD(DisplayProcess(struct pt *pt))
  {
-static unsigned char string_buf[32];
+
 static unsigned int P=200;
 static int F=32;
 static unsigned int U_ch2=756,U_ch3=375;

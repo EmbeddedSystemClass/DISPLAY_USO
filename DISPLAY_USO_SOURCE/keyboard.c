@@ -3,173 +3,178 @@
 #include "lcd.h"
 #include <stdio.h>
 #include "menu.h"
+#include <intrins.h>
 
 unsigned char lastKey,prevKey;
-unsigned char kf1,kf2,kf3;
 
 volatile struct pt pt_keyboard;
-volatile unsigned int key_code=0xFFFA;
+volatile unsigned char key_code=0x0;
 
 sbit LED=P0^6;
 
-//char KB_ReadPI();
-//
-//// Инициализация клавиатуры
-//void KB_Initialize()
-//{
-//	KB_PI &= 0xE0; // 1110 0000
-//
-//}
-//
-//char KB_ReadPI()
-//{
-//	char pi=0xFF;
-//	char i=0;
-//	char count=0;
-//	char tmp=0;
-//	pi = KB_PI | 0xE0; // 1110 0000
-//	for(i=0; i<5; i++)
-//	{
-//		tmp	= (pi >> i) | 0xFE;
-//		if(tmp != (char)0xFF)
-//			count++;
-//	}
-//	if(count > 1)
-//		return 0xFF;
-//	return pi;
-//}
-//
-//// Чтение кода нажатой клавиши
-//unsigned char KB_ReadKey()
-//{
-//	char i=0;
-//	char po = 0x1E; // 0001 1110
-//	char pi = 0xFF;
-//	char ci = 0x0;
-//	char co = 0x0;
-//	char count=0;	
-//	for(i=0; i<5; i++)
-//	{
-//		//KB_PI &= 0xE0; // 1110 0000
-//		KB_PO |= 0x1F;
-//		KB_PO &= (po | 0xE0); // 1110 0000
-//		pi = KB_ReadPI();
-//		if(pi != (char)0xFF) // если что-то нажато
-//		{
-//			if(pi != (char)0x55) // если не ошибка (нажата только одна клавиша строки)
-//			{ 
-//				co = /*(int)*/po; //
-//				ci = /*(int)*/pi; // запоминаем код клавиши
-//			//	co = co << 8;
-//			//	ci = ci & 0x00FF; 
-//				count++; // инкрементируем количество нажатых клавиш
-//			}
-//			else
-//				return 0x55;
-//		}
-//		po = (po << 1) | 0x01;
-//	}
-//	if(count == 1) // если нажата только одна клавиша, возвращаем ее код
-//	{
-//		ci=(0xFF-ci)&0x7F;
-//		co=(0xFF-co)&0x7F;
-//		return (co<<1|ci);
-//	}
-//	return 0xFF;
-//}
-//
-//unsigned char readKey(void)
-// {
-//	kf3=kf2;
-//	kf2=kf1;
-//	kf1=KB_ReadKey();/*getKeyCode(KBD_PIN & KBD_MASK)*/;
-//	
-//	if ((kf2==kf1) && (kf3==kf2)) {
-//		prevKey = lastKey;
-//		lastKey = kf1;
-//	
-//		if (prevKey != lastKey) 
-//		{
-//		//	sendMessage(MSG_KEY_PRESS, lastKey);
-//
-//			return lastKey;
-//
-//		}
-//	}
-//	return(0);
-//}
+unsigned char Key_Ask(void);
 
 PT_THREAD(KeyboardProcess(struct pt *pt))
  {
 
-  static unsigned char i=0;
-  static unsigned int  key_code_1=0xFFFF,key_code_2=0xFFFF, last_key_code=0xFFFF;
-  
+//  static unsigned char i=0;
+ // static unsigned int  key_code_1=0xFFFF,key_code_2=0xFFFF, last_key_code=0xFFFF;
+  static unsigned char key_1, key_2, last_key=0;
 
   PT_BEGIN(pt);
 
   while(1) 
   {  	
+//		PT_DELAY(pt,5);
+//		KB_PI&=~KB_MASK;
+//	///	KB_PI|=KB_MASK;
+//		key_code_1=0xFFFF;
+//		key_code_2=0xFFFF;
+//
+//		for(i=0;i<KB_COLUMN;i++)
+//		{
+//			KB_PO|=KB_MASK;
+//			KB_PO&=(~(1<<i));
+//
+//			if((KB_PI&KB_MASK)!=KB_MASK)
+//			{
+//				key_code_1=((((unsigned int)KB_PO&KB_MASK)<<8)&0xFF00)|(KB_PI&KB_MASK);//(((KB_PO&KB_MASK)<<KB_COLUMN)&(~KB_MASK))|(KB_PI&KB_MASK);
+//				KB_PO|=KB_MASK;
+//				break;
+//			}
+//			KB_PO|=KB_MASK;				
+//		}
+//	
+//		PT_DELAY(pt,5);
+//			
+//		KB_PI&=~KB_MASK;
+//		for(i=0;i<KB_COLUMN;i++)
+//		{
+//			KB_PO|=KB_MASK;
+//			KB_PO&=(~(1<<i));
+//
+//			if((KB_PI&KB_MASK)!=KB_MASK)
+//			{
+//				key_code_2=((((unsigned int)KB_PO&KB_MASK)<<8)&0xFF00)|(KB_PI&KB_MASK);//(((KB_PO&KB_MASK)<<KB_COLUMN)&(~KB_MASK))|(KB_PI&KB_MASK);
+//				KB_PO|=KB_MASK;
+//				break;
+//			}
+//			KB_PO|=KB_MASK;				
+//		}
+//
+//		if((key_code_1==key_code_2)&&(key_code_1!=0xFFFF)&&(key_code_1!=last_key_code))
+//		{
+//			key_code=last_key_code=key_code_1;
+//		//	LED=~LED;
+//			menuKey(key_code_1);				
+//		}
+//		else
+//		{
+//		//	key_code=0xFFFF; 
+//			
+//
+//			if((key_code_1==key_code_2)&&(key_code_1!=0xFFFF))
+//			{
+//				
+//			}
+//			
+//			if((key_code_1==0xFFFF)&&(key_code_2==0xFFFF))
+//			{
+//				last_key_code=0xFFFF;
+//			//	LED=~LED;
+//			}
+//		}
+
 		PT_DELAY(pt,5);
-		KB_PI&=~KB_MASK;
-	///	KB_PI|=KB_MASK;
-		key_code_1=0xFFFF;
-		key_code_2=0xFFFF;
-
-		for(i=0;i<KB_COLUMN;i++)
-		{
-			KB_PO|=KB_MASK;
-			KB_PO&=(~(1<<i));
-
-			if((KB_PI&KB_MASK)!=KB_MASK)
-			{
-				key_code_1=((((unsigned int)KB_PO&KB_MASK)<<8)&0xFF00)|(KB_PI&KB_MASK);//(((KB_PO&KB_MASK)<<KB_COLUMN)&(~KB_MASK))|(KB_PI&KB_MASK);
-				KB_PO|=KB_MASK;
-				break;
-			}
-			KB_PO|=KB_MASK;				
-		}
-	
+		key_1= Key_Ask();
 		PT_DELAY(pt,5);
-			
-		KB_PI&=~KB_MASK;
-		for(i=0;i<KB_COLUMN;i++)
-		{
-			KB_PO|=KB_MASK;
-			KB_PO&=(~(1<<i));
+		key_2= Key_Ask();
 
-			if((KB_PI&KB_MASK)!=KB_MASK)
-			{
-				key_code_2=((((unsigned int)KB_PO&KB_MASK)<<8)&0xFF00)|(KB_PI&KB_MASK);//(((KB_PO&KB_MASK)<<KB_COLUMN)&(~KB_MASK))|(KB_PI&KB_MASK);
-				KB_PO|=KB_MASK;
-				break;
-			}
-			KB_PO|=KB_MASK;				
-		}
-
-		if((key_code_1==key_code_2)&&(key_code_1!=0xFFFF)&&(key_code_1!=last_key_code))
-		{
-			key_code=last_key_code=key_code_1;
-		//	LED=~LED;
-			menuKey(key_code_1);				
-		}
-		else
-		{
-		//	key_code=0xFFFF; 
 			
 
-			if((key_code_1==key_code_2)&&(key_code_1!=0xFFFF))
+		if((key_1==key_2)&&(key_1!=last_key))
+		{
+			last_key=key_1;	
+			key_code=key_1;
+			
+			if(key_1!=0)
 			{
-				
+				menuKey(key_code);
+				LED=~LED;
 			}
 			
-			if((key_code_1==0xFFFF)&&(key_code_2==0xFFFF))
-			{
-				last_key_code=0xFFFF;
-			//	LED=~LED;
-			}
 		}
   }
 
   PT_END(pt);
+ }
+
+ unsigned char Key_Ask(void)
+ {
+ 	 KB_PI&=~KB_MASK;
+	 KB_PO|=KB_MASK;
+	 KB_PO&=(~(1<<0));	
+
+	 switch(KB_PI&KB_MASK)
+	 {
+	 	case 0x1E:{return '0';}break;
+		case 0x1D:{return '.';}break;
+		case 0x1B:{return 'P';}break;
+		case 0x17:{return '+';}break;
+		case 0x0F:{return '-';}break;
+	 }
+//
+ 	 KB_PI&=~KB_MASK;
+	 KB_PO|=KB_MASK;
+	 KB_PO&=(~(1<<1));	
+
+	 switch(KB_PI&KB_MASK)
+	 {
+	 	case 0x1E:{return '1';}break;
+		case 0x1D:{return '2';}break;
+		case 0x1B:{return '3';}break;
+		case 0x17:{return 'x';}break;
+		case 0x0F:{return '/';}break;
+	 }
+
+ 	 KB_PI&=~KB_MASK;
+	 KB_PO|=KB_MASK;
+	 KB_PO&=(~(1<<2));	
+
+	 switch(KB_PI&KB_MASK)
+	 {
+	 	case 0x1E:{return '4';}break;
+		case 0x1D:{return '5';}break;
+		case 0x1B:{return '6';}break;
+		case 0x17:{return '=';}break;
+		case 0x0F:{return '>';}break;
+	 }
+
+ 	 KB_PI&=~KB_MASK;
+	 KB_PO|=KB_MASK;
+	 KB_PO&=(~(1<<3));	
+
+	 switch(KB_PI&KB_MASK)
+	 {
+	 	case 0x1E:{return '7';}break;
+		case 0x1D:{return '8';}break;
+		case 0x1B:{return '9';}break;
+		case 0x17:{return '[';}break;
+		case 0x0F:{return ']';}break;
+	 }
+//
+ 	 KB_PI&=~KB_MASK;
+	 KB_PO|=KB_MASK;
+	 KB_PO&=(~(1<<4));	
+
+	 switch(KB_PI&KB_MASK)
+	 {
+	 	case 0x1E:{return 'C';}break;
+		case 0x1D:{return 'B';}break;
+		case 0x1B:{return 'H';}break;
+		case 0x17:{return 'F';}break;
+		case 0x0F:{return 'A';}break;
+	 }
+
+	 return 0;
  }
