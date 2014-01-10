@@ -5,6 +5,8 @@
 #include "menu.h"
 #include <intrins.h>
 
+sbit BIP=P0^7;
+
 unsigned char lastKey,prevKey;
 
 volatile struct pt pt_keyboard;
@@ -100,7 +102,19 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 			if(key_1!=0)
 			{
 				menuKey(key_code);
-				LED=~LED;
+			//	PT_DELAY(pt,1);
+				BIP=0;
+				PT_DELAY(pt,1);
+				BIP=1;
+				PT_DELAY(pt,1);
+				BIP=0;
+				PT_DELAY(pt,1);
+				BIP=1;
+				PT_DELAY(pt,1);
+				BIP=0;
+				PT_DELAY(pt,1);
+				BIP=1;
+//				LED=~LED;
 			}
 			
 		}

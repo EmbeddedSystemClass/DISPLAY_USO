@@ -240,7 +240,7 @@ unsigned char menuKey(unsigned char key)
 	}
 	else
 	{
-		if(key== '4') 
+		if(key== 'C') 
 		{ // отмена выбора (возврат)
 	
 			flag_menu_entry=0;
@@ -261,12 +261,6 @@ unsigned char menuKey(unsigned char key)
 			 
 		}
 	}
-
-//	LCD_WriteCommand(LCD_CMD_CLEAR);
-//    sprintf(&string_buf,"KEY=%c",key);
-//   	LCD_WriteAC(LCD_2_STR_ADDR);
-//	LCD_WriteString(&string_buf);
-
 	return (1);
 }
 //-----------------------------------------------------
@@ -531,6 +525,7 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 //		 }
 //		 break;
 	//----------------------------------------------
+		 
 	}	
 	return 0;
 }
@@ -544,35 +539,39 @@ unsigned char startMenu(void)
 	return 0;
 }
 //-------------------------------------------------------
-void dispSetScroller(unsigned int num,unsigned int max)//установка значения с полосой
+//void dispSetScroller(unsigned int num,unsigned int max)//установка значения с полосой
+//{
+//	unsigned char buf[21];//буфер для полосы прокрутки
+//	unsigned char i=0,n=0;
+//	memset(buf,0x20,20);
+//	buf[20]=0;
+//	
+//	n=(unsigned char)(DISPLAY_WIDTH*num/max);
+//	
+//	if(n>DISPLAY_WIDTH)
+//	{
+//		n=DISPLAY_WIDTH;
+//	}
+//
+//	for(i=0;i<n;i++)
+//	{
+//		buf[i]=0xFF;
+//	}
+//	LCD_WriteCommand(LCD_SET_ADDR|0x54);
+//	LCD_WriteString(buf);
+//
+// 	LCD_WriteCommand(LCD_SET_ADDR|0x1D);
+//	sprintf(buf,"%u     ",num);
+//	LCD_WriteString(buf);
+//
+//	return;
+//}
+
+
+void CalibrationScreen(unsigned char channel)//экран калибровки канала
 {
-	unsigned char buf[21];//буфер для полосы прокрутки
-	unsigned char i=0,n=0;
-	memset(buf,0x20,20);
-	buf[20]=0;
 	
-	n=(unsigned char)(DISPLAY_WIDTH*num/max);
-	
-	if(n>DISPLAY_WIDTH)
-	{
-		n=DISPLAY_WIDTH;
-	}
-
-	for(i=0;i<n;i++)
-	{
-		buf[i]=0xFF;
-	}
-	LCD_WriteCommand(LCD_SET_ADDR|0x54);
-	LCD_WriteString(buf);
-
- 	LCD_WriteCommand(LCD_SET_ADDR|0x1D);
-	sprintf(buf,"%u     ",num);
-	LCD_WriteString(buf);
-
-	return;
 }
-
-
 
 
 PT_THREAD(DisplayProcess(struct pt *pt))
