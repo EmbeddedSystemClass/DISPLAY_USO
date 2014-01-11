@@ -83,7 +83,7 @@ void LCD_WriteString(char *buf)
 void LCD_Strobe()
 {
 	LCD_E = 1;
-	delay(500);
+	delay(400);
 	LCD_E = 0;
 }
 

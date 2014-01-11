@@ -6,6 +6,7 @@
 #include "lcd.h"
 #include "proto_uso/proto_uso.h"
 #include "proto_uso/channels.h"
+#include <string.h>
 
 #define DISPLAY_WIDTH 	20
 #define DISPLAY_HEIGHT	4
@@ -106,8 +107,12 @@ MAKE_MENU(m_s3i13, NULL_ENTRY,m_s3i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FR
 
 
 unsigned char string_buf[32];
+unsigned char input_char_count;
+#define INPUT_CHAR_BUF_LEN	16
+unsigned char input_char_buf[INPUT_CHAR_BUF_LEN];
 
 unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key);	 //обработка меню
+void CalibrationScreen(unsigned char channel);//экран калибровки канала
 
 void menuChange(menuItem code* NewMenu)
 {
@@ -244,7 +249,7 @@ unsigned char menuKey(unsigned char key)
 		{ // отмена выбора (возврат)
 	
 			flag_menu_entry=0;
-			dynamic_disp=0;
+			dynamic_disp=DYN_NOT_DISPLAY;
 			LCD_WriteCommand(LCD_CMD_CLEAR);
 			delay(3);
 			LCD_WriteCommand(LCD_CMD_ON);
@@ -525,6 +530,121 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 //		 }
 //		 break;
 	//----------------------------------------------
+
+	case MENU_CHN1_CAL:
+	{
+		static unsigned char has_point;
+		switch(key)
+		{
+			case 'F':
+			{
+		 		LCD_WriteCommand(LCD_CMD_CLEAR);
+//				CalibrationScreen(2);
+				dynamic_disp= DYN_DISPALY_ON;
+				input_char_count=0;
+				has_point=0;
+				memset (input_char_buf,0,INPUT_CHAR_BUF_LEN);
+			}
+			break;
+
+			case '1':
+			{
+			   input_char_buf[input_char_count]='1';
+			   input_char_count++;
+			}
+			break;
+
+			case '2':
+			{
+			   input_char_buf[input_char_count]='2';
+			   input_char_count++;
+			}
+			break;
+
+			case '3':
+			{
+			   input_char_buf[input_char_count]='3';
+			   input_char_count++;
+			}
+			break;
+
+			case '4':
+			{
+			   input_char_buf[input_char_count]='4';
+			   input_char_count++;
+			}
+			break;
+
+			case '5':
+			{
+			   input_char_buf[input_char_count]='5';
+			   input_char_count++;
+			}
+			break;
+
+			case '6':
+			{
+			   input_char_buf[input_char_count]='6';
+			   input_char_count++;
+			}
+			break;
+
+			case '7':
+			{
+			   input_char_buf[input_char_count]='7';
+			   input_char_count++;
+			}
+			break;
+
+			case '8':
+			{
+			   input_char_buf[input_char_count]='8';
+			   input_char_count++;
+			}
+			break;
+
+			case '9':
+			{
+			   input_char_buf[input_char_count]='9';
+			   input_char_count++;
+			}
+			break;
+
+			case '0':
+			{
+			   input_char_buf[input_char_count]='0';
+			   input_char_count++;
+			}
+			break;
+
+			case '-':
+			{
+			   if(input_char_count==0)
+			   {
+				   input_char_buf[input_char_count]='-';
+				   input_char_count++;
+			   }
+			}
+			break;
+
+			case '.':
+			{
+			   if((has_point==0)&&(input_char_count!=0))
+			   {
+				   input_char_buf[input_char_count]='.';
+				   input_char_count++;
+				   has_point=1;
+			   }
+			}
+			break;
+		}
+		
+		if(input_char_count>=INPUT_CHAR_BUF_LEN)
+		{
+			 input_char_count=INPUT_CHAR_BUF_LEN-1;
+		}	
+	}
+	break;
 		 
 	}	
 	return 0;
@@ -567,10 +687,39 @@ unsigned char startMenu(void)
 //	return;
 //}
 
+enum
+{
+	CAL_FLOAT_LO=0,
+	CAL_FLOAT_HI
+};
 
 void CalibrationScreen(unsigned char channel)//экран калибровки канала
 {
-	
+	static 	unsigned char cal_float;//верхнее или нижнее значение
+
+   sprintf(&string_buf,"Chn. value: %d",(unsigned int)channels[channel].channel_data);
+   LCD_WriteAC(LCD_1_STR_ADDR);
+   LCD_WriteString(&string_buf);
+
+   LCD_WriteAC(LCD_2_STR_ADDR);
+   LCD_WriteString(&input_char_buf);
+
+	switch(cal_float)
+	{
+		case CAL_FLOAT_LO:
+		{
+		}
+		break;
+
+		case CAL_FLOAT_HI:
+		{
+		}
+		break;
+
+		default:
+		{
+		}
+	}
 }
 
 
@@ -619,8 +768,9 @@ static float I_ch4=18.6;
 	
 		sprintf(&string_buf,"P=%3dkg/cm F=%4dkgs",P,F);
 		LCD_WriteAC(LCD_1_STR_ADDR);
+		PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
-	
+	   
 	
 		U_ch2=(unsigned int)(channels[1].channel_data*10000/0xFFFF);
 		if(U_ch2>U_MAX)
@@ -630,8 +780,9 @@ static float I_ch4=18.6;
 	
 		sprintf(&string_buf,"2=%4d  mV",U_ch2);
 		LCD_WriteAC(LCD_2_STR_ADDR);
+		PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
-	
+		
 		U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
 		if(U_ch3>U_MAX)
 		{
@@ -640,17 +791,19 @@ static float I_ch4=18.6;
 	
 		sprintf(&string_buf,"3=%4d  mV",U_ch3);
 		LCD_WriteAC(LCD_3_STR_ADDR);
+		PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 	
-	
+		
 	 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
 		if(I_ch4>I_MAX)
 		{
 			I_ch4=I_MAX;
 		}
-	
+		
 		sprintf(&string_buf,"4=%4.1f  mA",I_ch4);
 		LCD_WriteAC(LCD_4_STR_ADDR);
+		PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);	
 	}
 
@@ -673,7 +826,12 @@ static float I_ch4=18.6;
 		sprintf(&string_buf,"SCREEN 4");
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
-	}	
+	}
+	
+	if((selectedMenuItem == &m_s3i1) && (flag_menu_entry==1))	 //calibr 1 channel
+	{
+		CalibrationScreen(2);	
+	}
   }
 
   PT_END(pt);
