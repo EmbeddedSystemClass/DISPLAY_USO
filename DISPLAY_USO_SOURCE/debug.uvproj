@@ -483,6 +483,11 @@
               <FileType>1</FileType>
               <FilePath>.\menu.c</FilePath>
             </File>
+            <File>
+              <FileName>device.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
