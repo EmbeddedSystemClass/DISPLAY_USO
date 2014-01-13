@@ -108,10 +108,22 @@ MAKE_MENU(m_s3i13, NULL_ENTRY,m_s3i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FR
 
 unsigned char string_buf[32];
 unsigned char input_char_count;
-#define INPUT_CHAR_BUF_LEN	16
-unsigned char input_char_buf[INPUT_CHAR_BUF_LEN];
+#define INPUT_CHAR_BUF_LEN	6
+
+unsigned char *input_char_buf;
+unsigned char input_char_buf_lo[INPUT_CHAR_BUF_LEN+1];
+unsigned char input_char_buf_hi[INPUT_CHAR_BUF_LEN+1];
+
+enum
+{
+	CAL_FLOAT_LO=0,
+	CAL_FLOAT_HI
+};
+
+unsigned char cal_float;//верхнее или нижнее значение
 
 unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key);	 //обработка меню
+void CalibrationKey(unsigned char key,unsigned char channel);
 void CalibrationScreen(unsigned char channel);//экран калибровки канала
 
 void menuChange(menuItem code* NewMenu)
@@ -533,17 +545,76 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 
 	case MENU_CHN1_CAL:
 	{
-		static unsigned char has_point;
+		CalibrationKey(key,2);	
+	}
+	break;
+		 
+	}	
+	return 0;
+}
+//-----------------------------------------------------
+unsigned char startMenu(void)
+ {
+	selectedMenuItem = &m_s0i1;
+
+	dispMenu();
+	PT_INIT(&pt_display);
+	return 0;
+}
+//-------------------------------------------------------
+void CalibrationKey(unsigned char key,unsigned char channel)
+{
+	static unsigned char has_point;
 		switch(key)
 		{
 			case 'F':
 			{
-		 		LCD_WriteCommand(LCD_CMD_CLEAR);
+		 		input_char_buf=input_char_buf_lo;
+				LCD_WriteCommand(LCD_CMD_CLEAR);
 //				CalibrationScreen(2);
 				dynamic_disp= DYN_DISPALY_ON;
 				input_char_count=0;
 				has_point=0;
-				memset (input_char_buf,0,INPUT_CHAR_BUF_LEN);
+				memset (input_char_buf_hi,' ',INPUT_CHAR_BUF_LEN);
+				memset (input_char_buf_lo,' ',INPUT_CHAR_BUF_LEN);
+				cal_float=CAL_FLOAT_LO;
+				input_char_buf[INPUT_CHAR_BUF_LEN]=0;
+			}
+			break;
+
+			case '[':
+			{
+			   	input_char_buf=input_char_buf_lo;
+				input_char_count=0;
+				has_point=0;
+		//		memset (input_char_buf,' ',INPUT_CHAR_BUF_LEN);
+				cal_float=CAL_FLOAT_LO;
+			}
+			break;
+
+			case ']':
+			{
+				input_char_buf=input_char_buf_hi;
+				input_char_count=0;
+				has_point=0;
+		//		memset (input_char_buf,' ',INPUT_CHAR_BUF_LEN);
+				cal_float=CAL_FLOAT_HI;
+			}
+			break;
+
+			case '=':
+			{
+				if(input_char_buf[0]!=' ')
+				{
+					if(cal_float==CAL_FLOAT_LO)
+					{	
+						sscanf(input_char_buf,"%f",&channels[channel].calibrate.cal.cal_lo);
+					}
+					else
+					{
+						sscanf(input_char_buf,"%f",&channels[channel].calibrate.cal.cal_hi);
+					}
+				}
 			}
 			break;
 
@@ -629,7 +700,7 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 
 			case '.':
 			{
-			   if((has_point==0)&&(input_char_count!=0))
+			   if((has_point==0)&&(input_char_count!=0)&&(input_char_count<(INPUT_CHAR_BUF_LEN-1)))
 			   {
 				   input_char_buf[input_char_count]='.';
 				   input_char_count++;
@@ -642,77 +713,45 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 		if(input_char_count>=INPUT_CHAR_BUF_LEN)
 		{
 			 input_char_count=INPUT_CHAR_BUF_LEN-1;
-		}	
-	}
-	break;
-		 
-	}	
-	return 0;
+		}		
 }
-//-----------------------------------------------------
-unsigned char startMenu(void)
- {
-	selectedMenuItem = &m_s0i1;
-
-	dispMenu();
-	PT_INIT(&pt_display);
-	return 0;
-}
-//-------------------------------------------------------
-//void dispSetScroller(unsigned int num,unsigned int max)//установка значения с полосой
-//{
-//	unsigned char buf[21];//буфер для полосы прокрутки
-//	unsigned char i=0,n=0;
-//	memset(buf,0x20,20);
-//	buf[20]=0;
-//	
-//	n=(unsigned char)(DISPLAY_WIDTH*num/max);
-//	
-//	if(n>DISPLAY_WIDTH)
-//	{
-//		n=DISPLAY_WIDTH;
-//	}
-//
-//	for(i=0;i<n;i++)
-//	{
-//		buf[i]=0xFF;
-//	}
-//	LCD_WriteCommand(LCD_SET_ADDR|0x54);
-//	LCD_WriteString(buf);
-//
-// 	LCD_WriteCommand(LCD_SET_ADDR|0x1D);
-//	sprintf(buf,"%u     ",num);
-//	LCD_WriteString(buf);
-//
-//	return;
-//}
-
-enum
-{
-	CAL_FLOAT_LO=0,
-	CAL_FLOAT_HI
-};
 
 void CalibrationScreen(unsigned char channel)//экран калибровки канала
 {
-	static 	unsigned char cal_float;//верхнее или нижнее значение
+	
 
    sprintf(&string_buf,"Chn. value: %d",(unsigned int)channels[channel].channel_data);
    LCD_WriteAC(LCD_1_STR_ADDR);
    LCD_WriteString(&string_buf);
 
-   LCD_WriteAC(LCD_2_STR_ADDR);
-   LCD_WriteString(&input_char_buf);
+
 
 	switch(cal_float)
 	{
 		case CAL_FLOAT_LO:
 		{
+			LCD_WriteAC(LCD_2_STR_ADDR);
+			sprintf(&string_buf,"[%s]",input_char_buf_lo);
+			LCD_WriteString(&string_buf);
+
+			LCD_WriteAC(LCD_3_STR_ADDR);
+			sprintf(&string_buf," %s ",input_char_buf_hi);
+			LCD_WriteString(&string_buf);
+
+			
+			
 		}
 		break;
 
 		case CAL_FLOAT_HI:
 		{
+			LCD_WriteAC(LCD_2_STR_ADDR);
+			sprintf(&string_buf," %s ",input_char_buf_lo);
+			LCD_WriteString(&string_buf);
+
+			LCD_WriteAC(LCD_3_STR_ADDR);
+			sprintf(&string_buf,"[%s]",input_char_buf_hi);
+			LCD_WriteString(&string_buf);
 		}
 		break;
 
@@ -720,11 +759,14 @@ void CalibrationScreen(unsigned char channel)//экран калибровки канала
 		{
 		}
 	}
+	LCD_WriteAC(LCD_4_STR_ADDR);
+	sprintf(&string_buf,"%f %f",channels[channel].calibrate.cal.cal_lo,channels[channel].calibrate.cal.cal_hi);
+	LCD_WriteString(&string_buf);
 }
 
 
 PT_THREAD(DisplayProcess(struct pt *pt))
- {
+{
 
 static unsigned int P=200;
 static int F=32;
