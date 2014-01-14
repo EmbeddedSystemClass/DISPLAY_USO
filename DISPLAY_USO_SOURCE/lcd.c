@@ -10,7 +10,7 @@ void LCD_Initialize()
 {		
 	// ждем >= 15 мс
 	
-	delay(50);
+	delay(50000);
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -19,7 +19,7 @@ void LCD_Initialize()
 
 	// ждем >= 4.1 мс
 
-	delay(1000);
+	delay(10000);
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -28,7 +28,7 @@ void LCD_Initialize()
 
 	// ждем >= 100 мкс
 
-	delay(100);
+	delay(1000);
 
 	LCD_RS = RS_IR;
 	LCD_RW = RW_WR;
@@ -54,7 +54,7 @@ void LCD_WriteCommand(char cmd)
 	LCD_RW = RW_WR;
 	LCD_DATA = cmd;
 	LCD_Strobe();
-	delay(15);
+	delay(100);
 }
 
 // Запись символа
@@ -64,7 +64,7 @@ void LCD_WriteData(char ch)
 	LCD_RW = RW_WR;
 	LCD_DATA = ch;
 	LCD_Strobe();
-	delay(15);
+	delay(100);
 }
 
 // Запись строки символов
@@ -83,7 +83,7 @@ void LCD_WriteString(char *buf)
 void LCD_Strobe()
 {
 	LCD_E = 1;
-	delay(400);
+	delay(500);
 	LCD_E = 0;
 }
 

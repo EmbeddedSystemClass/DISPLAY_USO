@@ -9,7 +9,8 @@
 "crc_table.obj",
 "keyboard.obj",
 "lcd.obj",
-"menu.obj" 
+"menu.obj",
+"calibrate.obj" 
 TO "debug" 
 RAMSIZE(256) 
 XDATA( 0X0000-0X7FFE )

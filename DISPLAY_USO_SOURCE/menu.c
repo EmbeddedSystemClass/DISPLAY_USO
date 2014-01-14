@@ -7,6 +7,7 @@
 #include "proto_uso/proto_uso.h"
 #include "proto_uso/channels.h"
 #include <string.h>
+#include "calibrate/calibrate.h"
 
 #define DISPLAY_WIDTH 	20
 #define DISPLAY_HEIGHT	4
@@ -306,7 +307,7 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 		}
 		break; 
 
-		case MENU_CHN1_CAL:
+		case MENU_CHN3_CAL:
 		{
 			CalibrationKey(key,2);	
 		}
@@ -338,15 +339,33 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 
 				input_field_hi.char_count=INPUT_CHAR_BUF_LEN;
 				input_field_lo.char_count=INPUT_CHAR_BUF_LEN;
-				input_field_hi.has_point=0;
-				input_field_lo.has_point=0;
-				memset (input_field_hi.input_char_buf,' ',INPUT_CHAR_BUF_LEN);
-				memset (input_field_lo.input_char_buf,' ',INPUT_CHAR_BUF_LEN);
+				
+			//	input_field_lo.has_point=0;
+			//	memset (input_field_hi.input_char_buf,' ',INPUT_CHAR_BUF_LEN);
+			//	memset (input_field_lo.input_char_buf,' ',INPUT_CHAR_BUF_LEN);
 				sprintf(input_field_hi.input_char_buf,"%5.4f",channels[channel].calibrate.cal.cal_hi);
-				sprintf(input_field_lo.input_char_buf,"%5.4f",channels[channel].calibrate.cal.cal_lo);				
+				sprintf(input_field_lo.input_char_buf,"%5.4f",channels[channel].calibrate.cal.cal_lo);	
+				
+				if(strchr (input_field_hi.input_char_buf,'.'))
+				{
+					input_field_hi.has_point=1;
+				}			
+				else
+				{
+					input_field_hi.has_point=0;
+				}
 
-			//	input_field_hi.input_char_buf[INPUT_CHAR_BUF_LEN]=0;
-			//	input_field_lo.input_char_buf[INPUT_CHAR_BUF_LEN]=0;
+				if(strchr (input_field_lo.input_char_buf,'.'))
+				{
+					input_field_lo.has_point=1;
+				}			
+				else
+				{
+					input_field_lo.has_point=0;
+				}
+
+				input_field_hi.input_char_buf[INPUT_CHAR_BUF_LEN]=0;
+				input_field_lo.input_char_buf[INPUT_CHAR_BUF_LEN]=0;
 
 			}
 			break;
@@ -370,10 +389,12 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 					if(input_field_ptr==&input_field_lo)
 					{	
 						sscanf(input_field_lo.input_char_buf,"%f",&channels[channel].calibrate.cal.cal_lo);
+						channels[channel].calibrate.cal.adc_lo=channels[channel].channel_data;
 					}
 					else
 					{
 						sscanf(input_field_hi.input_char_buf,"%f",&channels[channel].calibrate.cal.cal_hi);
+						channels[channel].calibrate.cal.adc_hi=channels[channel].channel_data;
 					}
 				}
 			}
@@ -397,6 +418,15 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 					{
 						input_field_ptr->input_char_buf[input_field_ptr->char_count]=' ';
 					}
+				}
+				
+				if(strchr (input_field_ptr->input_char_buf,'.'))
+				{
+					input_field_ptr->has_point=1;
+				}			
+				else
+				{
+					input_field_ptr->has_point=0;
 				}				
 			}
 			break;
@@ -591,17 +621,30 @@ static float I_ch4=18.6;
 		PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 		
-		U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
-		if(U_ch3>U_MAX)
-		{
-			U_ch3=U_MAX;
-		}
-	
-		sprintf(&string_buf,"3=%4d  mV",U_ch3);
+//		U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
+//		if(U_ch3>U_MAX)
+//		{
+//			U_ch3=U_MAX;
+//		}
+//	
+//		sprintf(&string_buf,"3=%4d  mV",U_ch3);
+//		LCD_WriteAC(LCD_3_STR_ADDR);
+//		PT_YIELD(pt);//дадим другим процессам время
+//		LCD_WriteString(&string_buf);
+
+
+//	 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
+//		if(I_ch4>I_MAX)
+//		{
+//			I_ch4=I_MAX;
+//		}
+		
+		sprintf(&string_buf,"Cal_3=%5.4f",GetCalibrateVal(2,channels[2].channel_data));
 		LCD_WriteAC(LCD_3_STR_ADDR);
 		PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
-	
+		
+			
 		
 	 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
 		if(I_ch4>I_MAX)
@@ -636,7 +679,7 @@ static float I_ch4=18.6;
 		LCD_WriteString(&string_buf);
 	}
 	
-	if((selectedMenuItem == &m_s3i1) && (flag_menu_entry==1))	 //calibr 1 channel
+	if((selectedMenuItem == &m_s3i3) && (flag_menu_entry==1))	 //calibr 1 channel
 	{
 		CalibrationScreen(2);	
 	}
