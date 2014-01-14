@@ -46,15 +46,13 @@ struct Channel
 	{
 		struct
 		{
-			unsigned char calibrate;//флаг калиброванности канала
-//			float K;//
-//			float C;//y=kx+c
-
 			unsigned long  adc_lo;
 			float 		   cal_lo;
 			
 			unsigned long  adc_hi;
-			float 		   cal_hi;		
+			float 		   cal_hi;
+
+			unsigned char calibrate;//флаг калиброванности канала		
 		} cal;
 		unsigned long serialize[5];//сериализованная часть структуры
 	} calibrate;

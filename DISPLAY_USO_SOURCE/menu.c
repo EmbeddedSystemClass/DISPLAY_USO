@@ -389,12 +389,14 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 					if(input_field_ptr==&input_field_lo)
 					{	
 						sscanf(input_field_lo.input_char_buf,"%f",&channels[channel].calibrate.cal.cal_lo);
-						channels[channel].calibrate.cal.adc_lo=channels[channel].channel_data;
+						SetFirstPoint(channel,channels[channel].channel_data,channels[channel].calibrate.cal.cal_lo);
+					//	channels[channel].calibrate.cal.adc_lo=channels[channel].channel_data;
 					}
 					else
 					{
 						sscanf(input_field_hi.input_char_buf,"%f",&channels[channel].calibrate.cal.cal_hi);
-						channels[channel].calibrate.cal.adc_hi=channels[channel].channel_data;
+						SetSecondPoint(channel,channels[channel].channel_data,channels[channel].calibrate.cal.cal_hi);
+						//channels[channel].calibrate.cal.adc_hi=channels[channel].channel_data;
 					}
 				}
 			}
@@ -533,7 +535,7 @@ void CalibrationScreen(unsigned char channel)//экран калибровки канала
 {
 	
 
-   sprintf(&string_buf,"Chn. value: %d",(unsigned int)channels[channel].channel_data);
+   sprintf(&string_buf,"Chn. value: %lu",channels[channel].channel_data);
    LCD_WriteAC(LCD_1_STR_ADDR);
    LCD_WriteString(&string_buf);
 

@@ -15,6 +15,7 @@
 #include "lcd.h"
 #include "menu.h"
 #include "keyboard.h"
+#include "calibrate/calibrate.h"
 
 extern struct pt pt_proto, pt_wdt, pt_display, pt_keyboard;
 
@@ -32,6 +33,7 @@ void main(void) //using 0
 
 	
 	ChannelsInit();//инициализация настроек каналов
+	RestoreCalibrate();
 	Protocol_Init();	
 	Timer1_Initialize(); //таймер шедулера 200Гц	
 

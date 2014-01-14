@@ -3,18 +3,18 @@
 //------------------------------------------------------------
 float GetCalibrateVal(unsigned char channel_num,unsigned long ADC_Code)   //преобразование значени€ ј÷ѕ в калиброванное значение	 ??? проверить && debug
 {
-	return 	((((float)(ADC_Code-channels[channel_num].calibrate.cal.adc_lo)/(float)(channels[channel_num].calibrate.cal.adc_hi-channels[channel_num].calibrate.cal.adc_lo))*(channels[channel_num].calibrate.cal.cal_hi-channels[channel_num].calibrate.cal.cal_lo)))+channels[channel_num].calibrate.cal.cal_lo; //
+	return 	((((float)((float)ADC_Code-(float)channels[channel_num].calibrate.cal.adc_lo)/(float)((float)channels[channel_num].calibrate.cal.adc_hi-(float)channels[channel_num].calibrate.cal.adc_lo))*(channels[channel_num].calibrate.cal.cal_hi-channels[channel_num].calibrate.cal.cal_lo)))+channels[channel_num].calibrate.cal.cal_lo; //
 }
 //------------------------------------------------------------
 void RestoreCalibrate(void)		 //восстановление точек калибровки из EEPROM
 {
-//	unsigned char i=0;
+	unsigned char i=0;
 //	unsigned long crc=0,true_crc=0;
-//
-//	for(i=0;i<CHANNEL_NUMBER;i++)
-//	{
-//		EEPROM_Read(&channels[i].calibrate.serialize[0],3,ADC_CALIBRATE_ADDR+i*3);
-//	}
+
+	for(i=0;i<CHANNEL_NUMBER;i++)
+	{
+		EEPROM_Read(&channels[i].calibrate.serialize[0],5,ADC_CALIBRATE_ADDR+i*5);
+	}
 //
 //	true_crc= (unsigned long)Calibrate_Get_CRC();//расчет текущей CRC калибровок
 //	EEPROM_Read(&crc,1,CALIBRATE_DEVICE_CRC_ADDR);//считаем CRC настроек
@@ -25,6 +25,31 @@ void RestoreCalibrate(void)		 //восстановление точек калибровки из EEPROM
 //	}
 
 	return;
+}
+//------------------------------------------------------------
+void SetFirstPoint(unsigned char channel_num,long ADC_Code,float val)	 //
+{	  
+
+
+		channels[channel_num].calibrate.cal.adc_lo=ADC_Code;
+		channels[channel_num].calibrate.cal.cal_lo=val;
+
+		EEPROM_Write(&channels[channel_num].calibrate.serialize,5,ADC_CALIBRATE_ADDR+channel_num*5);
+	
+		return;
+}
+//------------------------------------------------------------
+void SetSecondPoint(unsigned char channel_num,long ADC_Code,float val) // 
+{		
+
+		channels[channel_num].calibrate.cal.adc_hi=ADC_Code;
+		channels[channel_num].calibrate.cal.cal_hi=val;
+	
+
+		EEPROM_Write(&channels[channel_num].calibrate.serialize,5,ADC_CALIBRATE_ADDR+channel_num*5);
+
+
+		return;
 }
 //---------------------------------------------------------------
 //void Calibrate(unsigned char channel_num,float K,float C) //обща€ функци€ калибровки
