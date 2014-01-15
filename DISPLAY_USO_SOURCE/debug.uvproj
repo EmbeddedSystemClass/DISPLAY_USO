@@ -488,6 +488,11 @@
               <FileType>5</FileType>
               <FilePath>.\device.h</FilePath>
             </File>
+            <File>
+              <FileName>calibrate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\calibrate\calibrate.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

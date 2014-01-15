@@ -123,15 +123,15 @@ enum
 
 struct input_field
 {
-	unsigned char input_char_buf[INPUT_CHAR_BUF_LEN+1];
+	unsigned char input_char_buf[2*INPUT_CHAR_BUF_LEN+1];
 	unsigned char char_count;
 	unsigned char has_point;
 };
 
-struct input_field input_field_lo={"      ",0,0};
-struct input_field input_field_hi={"      ",0,0};
+volatile struct input_field input_field_lo={"      ",0,0};
+volatile struct input_field input_field_hi={"      ",0,0};
 
-struct input_field *input_field_ptr;
+volatile struct input_field *input_field_ptr;
 
 unsigned char cal_float;//верхнее или нижнее значение
 
@@ -357,25 +357,25 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 
 		case MENU_CHN_DOL_CAL:
 		{
-			CalibrationKey(key,8);	
+			CalibrationKey(key,11);	
 		}
 		break;
 
 		case MENU_CHN_FREQ1_CAL:
 		{
-			CalibrationKey(key,9);	
+			CalibrationKey(key,8);	
 		}
 		break;
 
 		case MENU_CHN_FREQ2_CAL:
 		{
-			CalibrationKey(key,10);	
+			CalibrationKey(key,9);	
 		}
 		break;
 
 		case MENU_CHN_FREQ3_CAL:
 		{
-			CalibrationKey(key,11);	
+			CalibrationKey(key,10);	
 		}
 		break;
 
@@ -403,7 +403,7 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 		{
 			case 'F':
 			{
-				input_field_ptr=&input_field_lo;
+				
 
 				LCD_WriteCommand(LCD_CMD_CLEAR);
 
@@ -411,10 +411,7 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 
 				input_field_hi.char_count=INPUT_CHAR_BUF_LEN;
 				input_field_lo.char_count=INPUT_CHAR_BUF_LEN;
-				
-			//	input_field_lo.has_point=0;
-			//	memset (input_field_hi.input_char_buf,' ',INPUT_CHAR_BUF_LEN);
-			//	memset (input_field_lo.input_char_buf,' ',INPUT_CHAR_BUF_LEN);
+
 				sprintf(input_field_hi.input_char_buf,"%5.4f",channels[channel].calibrate.cal.cal_hi);
 				sprintf(input_field_lo.input_char_buf,"%5.4f",channels[channel].calibrate.cal.cal_lo);	
 				
@@ -439,6 +436,8 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 				input_field_hi.input_char_buf[INPUT_CHAR_BUF_LEN]=0;
 				input_field_lo.input_char_buf[INPUT_CHAR_BUF_LEN]=0;
 
+				input_field_ptr=&input_field_lo;
+
 			}
 			break;
 
@@ -462,13 +461,11 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 					{	
 						sscanf(input_field_lo.input_char_buf,"%f",&channels[channel].calibrate.cal.cal_lo);
 						SetFirstPoint(channel,channels[channel].channel_data,channels[channel].calibrate.cal.cal_lo);
-					//	channels[channel].calibrate.cal.adc_lo=channels[channel].channel_data;
 					}
 					else
 					{
 						sscanf(input_field_hi.input_char_buf,"%f",&channels[channel].calibrate.cal.cal_hi);
 						SetSecondPoint(channel,channels[channel].channel_data,channels[channel].calibrate.cal.cal_hi);
-						//channels[channel].calibrate.cal.adc_hi=channels[channel].channel_data;
 					}
 				}
 			}
@@ -605,31 +602,29 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 
 void CalibrationScreen(unsigned char channel)//экран калибровки канала
 {
-	
-
-   sprintf(&string_buf,"Chn. value: %lu",channels[channel].channel_data);
+   sprintf(&string_buf,"Chn. val.:% 8lu",channels[channel].channel_data);
    LCD_WriteAC(LCD_1_STR_ADDR);
    LCD_WriteString(&string_buf);
 
  	if(input_field_ptr==&input_field_lo)
 	{
 			LCD_WriteAC(LCD_2_STR_ADDR);
-			sprintf(&string_buf,"Low val [%s]",input_field_lo.input_char_buf);
+			sprintf(&string_buf,"Low val [%6s]",input_field_lo.input_char_buf);
 			LCD_WriteString(&string_buf);
 
 			LCD_WriteAC(LCD_3_STR_ADDR);
-			sprintf(&string_buf,"High val %s ",input_field_hi.input_char_buf);
+			sprintf(&string_buf,"High val %6s ",input_field_hi.input_char_buf);
 			LCD_WriteString(&string_buf);
 	}
 
 	if(input_field_ptr==&input_field_hi)
 	{
 			LCD_WriteAC(LCD_2_STR_ADDR);
-			sprintf(&string_buf,"Low val  %s ",input_field_lo.input_char_buf);
-			LCD_WriteString(&string_buf);
+			sprintf(&string_buf,"Low val  %6s ",input_field_lo.input_char_buf);
+			LCD_WriteString(&string_buf); 
 
 			LCD_WriteAC(LCD_3_STR_ADDR);
-			sprintf(&string_buf,"High val[%s]",input_field_hi.input_char_buf);
+			sprintf(&string_buf,"High val[%6s]",input_field_hi.input_char_buf);
 			LCD_WriteString(&string_buf);
 	}
 }
@@ -643,7 +638,6 @@ static int F=32;
 static unsigned int U_ch2=756,U_ch3=375;
 static float I_ch4=18.6;
 
-//static float channel_1_val=100.55;
 
   PT_BEGIN(pt);
 
@@ -659,7 +653,8 @@ static float I_ch4=18.6;
 	
 	if(selectedMenuItem == &m_s0i1)
 	{
-		P= (unsigned int)channels[0].channel_data;
+		//P= (unsigned int)channels[0].channel_data;
+		P=(unsigned int)GetCalibrateVal(0,channels[0].channel_data);
 		if(P>P_MAX)
 		{
 			P=P_MAX;
@@ -680,11 +675,12 @@ static float I_ch4=18.6;
 	
 		sprintf(&string_buf,"P=%3dkg/cm F=%4dkgs",P,F);
 		LCD_WriteAC(LCD_1_STR_ADDR);
-	//	PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 	   
 	
-		U_ch2=(unsigned int)(channels[1].channel_data*10000/0xFFFF);
+		//U_ch2=(unsigned int)(channels[1].channel_data*10000/0xFFFF);
+		U_ch2=(unsigned int)GetCalibrateVal(1,channels[1].channel_data);
+
 		if(U_ch2>U_MAX)
 		{
 			U_ch2=U_MAX;
@@ -695,16 +691,16 @@ static float I_ch4=18.6;
 	//	PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 		
-//		U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
-//		if(U_ch3>U_MAX)
-//		{
-//			U_ch3=U_MAX;
-//		}
-//	
-//		sprintf(&string_buf,"3=%4d  mV",U_ch3);
-//		LCD_WriteAC(LCD_3_STR_ADDR);
-//		PT_YIELD(pt);//дадим другим процессам время
-//		LCD_WriteString(&string_buf);
+		//U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
+		U_ch3=(unsigned int)GetCalibrateVal(2,channels[2].channel_data);
+		if(U_ch3>U_MAX)
+		{
+			U_ch3=U_MAX;
+		}
+	
+		sprintf(&string_buf,"3=%4d  mV",U_ch3);
+		LCD_WriteAC(LCD_3_STR_ADDR);
+		LCD_WriteString(&string_buf);
 
 
 //	 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
@@ -713,14 +709,15 @@ static float I_ch4=18.6;
 //			I_ch4=I_MAX;
 //		}
 		
-		sprintf(&string_buf,"Cal_3=%5.3f",GetCalibrateVal(2,channels[2].channel_data));
-		LCD_WriteAC(LCD_3_STR_ADDR);
-	//	PT_YIELD(pt);//дадим другим процессам время
-		LCD_WriteString(&string_buf);
+//		sprintf(&string_buf,"Cal_3=%5.3f",GetCalibrateVal(2,channels[2].channel_data));
+//		LCD_WriteAC(LCD_3_STR_ADDR);
+//	//	PT_YIELD(pt);//дадим другим процессам время
+//		LCD_WriteString(&string_buf);
 		
 			
 		
-	 	I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
+	 	//I_ch4=((float)channels[3].channel_data*20.0/0xFFFF);
+		I_ch4=GetCalibrateVal(3,channels[3].channel_data);
 		if(I_ch4>I_MAX)
 		{
 			I_ch4=I_MAX;
@@ -734,22 +731,46 @@ static float I_ch4=18.6;
 
 	if(selectedMenuItem == &m_s0i2)
 	{
-		sprintf(&string_buf,"SCREEN 2");
+		sprintf(&string_buf,"Chnl. 5=%5.3f",GetCalibrateVal(4,channels[4].channel_data));
+		LCD_WriteAC(LCD_1_STR_ADDR);
+		LCD_WriteString(&string_buf);
+
+		sprintf(&string_buf,"Chnl. 6=%5.3f",GetCalibrateVal(5,channels[5].channel_data));
+		LCD_WriteAC(LCD_2_STR_ADDR);
+		LCD_WriteString(&string_buf);
+
+		sprintf(&string_buf,"Chnl. 7=%5.3f",GetCalibrateVal(6,channels[6].channel_data));
+		LCD_WriteAC(LCD_3_STR_ADDR);
+		LCD_WriteString(&string_buf);
+
+		sprintf(&string_buf,"Chnl. 8=%5.3f",GetCalibrateVal(7,channels[7].channel_data));
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
 
 	if(selectedMenuItem == &m_s0i3)
 	{
-		sprintf(&string_buf,"SCREEN 3");
+ 		sprintf(&string_buf,"Freq. 1=%5.1f",GetCalibrateVal(8,channels[8].channel_data));
+		LCD_WriteAC(LCD_1_STR_ADDR);
+		LCD_WriteString(&string_buf);
+
+		sprintf(&string_buf,"Freq. 2=%5.1f",GetCalibrateVal(9,channels[9].channel_data));
+		LCD_WriteAC(LCD_2_STR_ADDR);
+		LCD_WriteString(&string_buf);
+
+		sprintf(&string_buf,"Freq. 3=%5.1f",GetCalibrateVal(10,channels[10].channel_data));
+		LCD_WriteAC(LCD_3_STR_ADDR);
+		LCD_WriteString(&string_buf);
+
+		sprintf(&string_buf,"Freq. Hi=%5u",(unsigned int)GetCalibrateVal(12,channels[12].channel_data));
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
 
 	if(selectedMenuItem == &m_s0i4)
 	{
-		sprintf(&string_buf,"SCREEN 4");
-		LCD_WriteAC(LCD_4_STR_ADDR);
+		sprintf(&string_buf,"DOL =%08lu",(unsigned long)GetCalibrateVal(11,channels[11].channel_data));
+		LCD_WriteAC(LCD_1_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
 
@@ -803,22 +824,22 @@ static float I_ch4=18.6;
 
 		if(selectedMenuItem == &m_s3i9)	 //calibr 1 channel
 		{
-			CalibrationScreen(8);	
+			CalibrationScreen(11);	
 		}
 
 		if(selectedMenuItem == &m_s3i10)	 //calibr 1 channel
 		{
-			CalibrationScreen(9);	
+			CalibrationScreen(8);	
 		}
 
 		if(selectedMenuItem == &m_s3i11)	 //calibr 1 channel
 		{
-			CalibrationScreen(10);	
+			CalibrationScreen(9);	
 		}
 
 		if(selectedMenuItem == &m_s3i12)	 //calibr 1 channel
 		{
-			CalibrationScreen(11);	
+			CalibrationScreen(10);	
 		}
 
 		if(selectedMenuItem == &m_s3i13)	 //calibr 1 channel
