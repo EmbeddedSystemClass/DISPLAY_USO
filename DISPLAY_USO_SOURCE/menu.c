@@ -73,7 +73,7 @@ MAKE_MENU(m_s0i3,  m_s0i4,	  m_s0i2,      NULL_ENTRY, m_s1i1,       0, 	"DATA SC
 MAKE_MENU(m_s0i4,  NULL_ENTRY,m_s0i3,      NULL_ENTRY, m_s1i1,       0, 	"DATA SCREEN4");
 
 MAKE_MENU(m_s1i1,  m_s1i2,    NULL_ENTRY,  m_s0i1,     m_s2i1,       0, 		"Channel settings");
-MAKE_MENU(m_s1i2,  m_s1i3,    m_s1i1,      m_s0i1,     m_s3i1,       0, 		"Channel calibr.");
+MAKE_MENU(m_s1i2,  /*m_s1i3*/NULL_ENTRY,    m_s1i1,      m_s0i1,     m_s3i1,       0, 		"Channel calibr.");
 MAKE_MENU(m_s1i3,  NULL_ENTRY,m_s1i2,      m_s0i1,     NULL_ENTRY,   MENU_DEV_SET,"Device settings");
 
 // подменю Настройка каналов
@@ -156,7 +156,7 @@ xdata menuItem code * tempMenu, *tempMenu2;
 
 	tempMenu = selectedMenuItem;//->Parent;
 
-
+	LCD_WriteCommand(LCD_CMD_ON);
     LCD_WriteCommand(LCD_CMD_CLEAR);
 
 	if ((tempMenu == &m_s0i1)||(tempMenu == &m_s0i2)||(tempMenu == &m_s0i3)||(tempMenu == &m_s0i4)) 
@@ -252,6 +252,7 @@ unsigned char menuKey(unsigned char key)
 			case 'C': 
 			{ // отмена выбора (возврат)
 				menuChange(PARENT);
+//				LCD_WriteCommand(LCD_CMD_ON);
 			}
 			break;
 	
@@ -597,35 +598,52 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 		if(input_field_ptr->char_count>=INPUT_CHAR_BUF_LEN)
 		{
 			 input_field_ptr->char_count=INPUT_CHAR_BUF_LEN-1;
-		}		
+		}
+		CalibrationScreen(channel);		
 }
 
 void CalibrationScreen(unsigned char channel)//экран калибровки канала
 {
-   sprintf(&string_buf,"Chn. val.:% 8lu",channels[channel].channel_data);
-   LCD_WriteAC(LCD_1_STR_ADDR);
-   LCD_WriteString(&string_buf);
+//   sprintf(&string_buf,"Chn. val.:% 8lu",channels[channel].channel_data);
+//   LCD_WriteAC(LCD_1_STR_ADDR);
+//   LCD_WriteString(&string_buf);
 
  	if(input_field_ptr==&input_field_lo)
 	{
-			LCD_WriteAC(LCD_2_STR_ADDR);
+			LCD_WriteAC(LCD_1_STR_ADDR);
 			sprintf(&string_buf,"Low val [%6s]",input_field_lo.input_char_buf);
 			LCD_WriteString(&string_buf);
 
-			LCD_WriteAC(LCD_3_STR_ADDR);
+			LCD_WriteAC(LCD_2_STR_ADDR);
 			sprintf(&string_buf,"High val %6s ",input_field_hi.input_char_buf);
 			LCD_WriteString(&string_buf);
+
+			LCD_WriteAC(LCD_4_STR_ADDR);
+			sprintf(&string_buf,"'='-Enter,'/'-Del");
+			LCD_WriteString(&string_buf);
+
+			LCD_WriteAC(LCD_1_STR_ADDR+9+input_field_lo.char_count);
+			LCD_WriteCommand(LCD_CMD_CURSOR);
+
+
 	}
 
 	if(input_field_ptr==&input_field_hi)
 	{
-			LCD_WriteAC(LCD_2_STR_ADDR);
+			LCD_WriteAC(LCD_1_STR_ADDR);
 			sprintf(&string_buf,"Low val  %6s ",input_field_lo.input_char_buf);
 			LCD_WriteString(&string_buf); 
 
-			LCD_WriteAC(LCD_3_STR_ADDR);
+			LCD_WriteAC(LCD_2_STR_ADDR);
 			sprintf(&string_buf,"High val[%6s]",input_field_hi.input_char_buf);
 			LCD_WriteString(&string_buf);
+
+			LCD_WriteAC(LCD_4_STR_ADDR);
+			sprintf(&string_buf,"'='-Enter,'/'-Del");
+			LCD_WriteString(&string_buf);
+
+			LCD_WriteAC(LCD_2_STR_ADDR+9+input_field_hi.char_count);
+			LCD_WriteCommand(LCD_CMD_CURSOR);
 	}
 }
 
@@ -782,70 +800,70 @@ static float I_ch4=18.6;
 //		CalibrationScreen(2);	
 //	}
 
-		if(selectedMenuItem == &m_s3i1)	 //calibr 1 channel
-		{
-			CalibrationScreen(0);	
-		}
-
-		if(selectedMenuItem == &m_s3i2)	 //calibr 1 channel
-		{
-			CalibrationScreen(1);	
-		}
-
-		if(selectedMenuItem == &m_s3i3)	 //calibr 1 channel
-		{
-			CalibrationScreen(2);	
-		}
-
-		if(selectedMenuItem == &m_s3i4)	 //calibr 1 channel
-		{
-			CalibrationScreen(3);	
-		}
-
-		if(selectedMenuItem == &m_s3i5)	 //calibr 1 channel
-		{
-			CalibrationScreen(4);	
-		}
-
-		if(selectedMenuItem == &m_s3i6)	 //calibr 1 channel
-		{
-			CalibrationScreen(5);	
-		}
-
-		if(selectedMenuItem == &m_s3i7)	 //calibr 1 channel
-		{
-			CalibrationScreen(6);	
-		}
-
-		if(selectedMenuItem == &m_s3i8)	 //calibr 1 channel
-		{
-			CalibrationScreen(7);	
-		}
-
-		if(selectedMenuItem == &m_s3i9)	 //calibr 1 channel
-		{
-			CalibrationScreen(11);	
-		}
-
-		if(selectedMenuItem == &m_s3i10)	 //calibr 1 channel
-		{
-			CalibrationScreen(8);	
-		}
-
-		if(selectedMenuItem == &m_s3i11)	 //calibr 1 channel
-		{
-			CalibrationScreen(9);	
-		}
-
-		if(selectedMenuItem == &m_s3i12)	 //calibr 1 channel
-		{
-			CalibrationScreen(10);	
-		}
-
-		if(selectedMenuItem == &m_s3i13)	 //calibr 1 channel
-		{
-			CalibrationScreen(12);	
-		}
+//		if(selectedMenuItem == &m_s3i1)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(0);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i2)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(1);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i3)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(2);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i4)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(3);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i5)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(4);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i6)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(5);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i7)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(6);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i8)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(7);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i9)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(11);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i10)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(8);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i11)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(9);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i12)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(10);	
+//		}
+//
+//		if(selectedMenuItem == &m_s3i13)	 //calibr 1 channel
+//		{
+//			CalibrationScreen(12);	
+//		}
 	}
   }
 
