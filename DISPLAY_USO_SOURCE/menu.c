@@ -307,9 +307,81 @@ unsigned char menuHandler(menuItem* currentMenuItem,unsigned int key)	 //обработ
 		}
 		break; 
 
+		case MENU_CHN1_CAL:
+		{
+			CalibrationKey(key,0);	
+		}
+		break;
+
+		case MENU_CHN2_CAL:
+		{
+			CalibrationKey(key,1);	
+		}
+		break;
+
 		case MENU_CHN3_CAL:
 		{
 			CalibrationKey(key,2);	
+		}
+		break;
+
+		case MENU_CHN4_CAL:
+		{
+			CalibrationKey(key,3);	
+		}
+		break;
+
+		case MENU_CHN5_CAL:
+		{
+			CalibrationKey(key,4);	
+		}
+		break;
+
+		case MENU_CHN6_CAL:
+		{
+			CalibrationKey(key,5);	
+		}
+		break;
+
+		case MENU_CHN7_CAL:
+		{
+			CalibrationKey(key,6);	
+		}
+		break;
+
+		case MENU_CHN8_CAL:
+		{
+			CalibrationKey(key,7);	
+		}
+		break;
+
+		case MENU_CHN_DOL_CAL:
+		{
+			CalibrationKey(key,8);	
+		}
+		break;
+
+		case MENU_CHN_FREQ1_CAL:
+		{
+			CalibrationKey(key,9);	
+		}
+		break;
+
+		case MENU_CHN_FREQ2_CAL:
+		{
+			CalibrationKey(key,10);	
+		}
+		break;
+
+		case MENU_CHN_FREQ3_CAL:
+		{
+			CalibrationKey(key,11);	
+		}
+		break;
+
+		case MENU_CHN_FREQ_HI_CAL:
+		{
+			CalibrationKey(key,12);	
 		}
 		break;
 	}	
@@ -608,7 +680,7 @@ static float I_ch4=18.6;
 	
 		sprintf(&string_buf,"P=%3dkg/cm F=%4dkgs",P,F);
 		LCD_WriteAC(LCD_1_STR_ADDR);
-		PT_YIELD(pt);//дадим другим процессам время
+	//	PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 	   
 	
@@ -620,7 +692,7 @@ static float I_ch4=18.6;
 	
 		sprintf(&string_buf,"2=%4d  mV",U_ch2);
 		LCD_WriteAC(LCD_2_STR_ADDR);
-		PT_YIELD(pt);//дадим другим процессам время
+	//	PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 		
 //		U_ch3=(unsigned int)(channels[2].channel_data*10000/0xFFFF);
@@ -641,9 +713,9 @@ static float I_ch4=18.6;
 //			I_ch4=I_MAX;
 //		}
 		
-		sprintf(&string_buf,"Cal_3=%5.4f",GetCalibrateVal(2,channels[2].channel_data));
+		sprintf(&string_buf,"Cal_3=%5.3f",GetCalibrateVal(2,channels[2].channel_data));
 		LCD_WriteAC(LCD_3_STR_ADDR);
-		PT_YIELD(pt);//дадим другим процессам время
+	//	PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);
 		
 			
@@ -656,7 +728,7 @@ static float I_ch4=18.6;
 		
 		sprintf(&string_buf,"4=%4.1f  mA",I_ch4);
 		LCD_WriteAC(LCD_4_STR_ADDR);
-		PT_YIELD(pt);//дадим другим процессам время
+	//	PT_YIELD(pt);//дадим другим процессам время
 		LCD_WriteString(&string_buf);	
 	}
 
@@ -680,10 +752,79 @@ static float I_ch4=18.6;
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
-	
-	if((selectedMenuItem == &m_s3i3) && (flag_menu_entry==1))	 //calibr 1 channel
+
+	if(flag_menu_entry==1)
 	{
-		CalibrationScreen(2);	
+	
+//	if((selectedMenuItem == &m_s3i3) && (flag_menu_entry==1))	 //calibr 1 channel
+//	{
+//		CalibrationScreen(2);	
+//	}
+
+		if(selectedMenuItem == &m_s3i1)	 //calibr 1 channel
+		{
+			CalibrationScreen(0);	
+		}
+
+		if(selectedMenuItem == &m_s3i2)	 //calibr 1 channel
+		{
+			CalibrationScreen(1);	
+		}
+
+		if(selectedMenuItem == &m_s3i3)	 //calibr 1 channel
+		{
+			CalibrationScreen(2);	
+		}
+
+		if(selectedMenuItem == &m_s3i4)	 //calibr 1 channel
+		{
+			CalibrationScreen(3);	
+		}
+
+		if(selectedMenuItem == &m_s3i5)	 //calibr 1 channel
+		{
+			CalibrationScreen(4);	
+		}
+
+		if(selectedMenuItem == &m_s3i6)	 //calibr 1 channel
+		{
+			CalibrationScreen(5);	
+		}
+
+		if(selectedMenuItem == &m_s3i7)	 //calibr 1 channel
+		{
+			CalibrationScreen(6);	
+		}
+
+		if(selectedMenuItem == &m_s3i8)	 //calibr 1 channel
+		{
+			CalibrationScreen(7);	
+		}
+
+		if(selectedMenuItem == &m_s3i9)	 //calibr 1 channel
+		{
+			CalibrationScreen(8);	
+		}
+
+		if(selectedMenuItem == &m_s3i10)	 //calibr 1 channel
+		{
+			CalibrationScreen(9);	
+		}
+
+		if(selectedMenuItem == &m_s3i11)	 //calibr 1 channel
+		{
+			CalibrationScreen(10);	
+		}
+
+		if(selectedMenuItem == &m_s3i12)	 //calibr 1 channel
+		{
+			CalibrationScreen(11);	
+		}
+
+		if(selectedMenuItem == &m_s3i13)	 //calibr 1 channel
+		{
+			CalibrationScreen(12);	
+		}
 	}
   }
 
