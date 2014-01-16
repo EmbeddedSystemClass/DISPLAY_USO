@@ -9,15 +9,13 @@
 #define WDT_1000 	0x62
 #define WDT_2000 	0x72
 //---------------------------------------
-#define PROCESS_NUM	6
+#define PROCESS_NUM	4
 enum
 {
 	Proto_Proc=0,
-	Sort_Proc= 1,
+	Key_Proc= 1,
 	Watch_Proc=2,
-	I2C_RepeatRead_Proc=3,
-	Frequency_Measure_Proc=4,
-	I2C_Proc=5
+	Display_Proc=3
 };
 
 enum

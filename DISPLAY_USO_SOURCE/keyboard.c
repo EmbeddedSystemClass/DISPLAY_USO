@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "menu.h"
 #include <intrins.h>
+#include "watchdog.h"
 
 sbit BIP=P0^7;
 
@@ -24,7 +25,7 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
   static unsigned char key_1, key_2, last_key=0;
 
   PT_BEGIN(pt);
-
+  wdt_count[Key_Proc].process_state=RUN;
   while(1) 
   {  	
 		PT_DELAY(pt,5);
@@ -51,9 +52,9 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 				BIP=0;
 				PT_DELAY(pt,1);
 				BIP=1;
-			}
-			
+			}			
 		}
+	wdt_count[Key_Proc].count++;	
   }
 
   PT_END(pt);

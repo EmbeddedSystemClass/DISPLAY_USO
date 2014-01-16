@@ -8,6 +8,7 @@
 #include "proto_uso/channels.h"
 #include <string.h>
 #include "calibrate/calibrate.h"
+#include "watchdog.h"
 
 #define DISPLAY_WIDTH 	20
 #define DISPLAY_HEIGHT	4
@@ -685,9 +686,10 @@ static float I_ch4=18.6;
 
   while(1) 
   {
-  
- 	PT_YIELD_UNTIL(pt,dynamic_disp); //ждем команды на старт	 
-  
+	wdt_count[Display_Proc].process_state=IDLE;  
+ 	PT_YIELD_UNTIL(pt,dynamic_disp); //ждем команды на старт	
+	 
+  	wdt_count[Display_Proc].process_state=RUN;
   	PT_DELAY(pt,20);
 	Channel_All_Get_Data_Request();
 	PT_DELAY(pt,20);
@@ -808,19 +810,19 @@ static float I_ch4=18.6;
 //		LCD_WriteAC(LCD_4_STR_ADDR);
 //		LCD_WriteString(&string_buf);
 
- 		sprintf(&string_buf,"Freq. 1=%5.1f",(float)channels[8].channel_data/256);
+ 		sprintf(&string_buf,"Freq. 1=%5.1f Hz",(float)channels[8].channel_data/256);
 		LCD_WriteAC(LCD_1_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Freq. 2=%5.1f",(float)channels[9].channel_data/256);
+		sprintf(&string_buf,"Freq. 2=%5.1f Hz",(float)channels[9].channel_data/256);
 		LCD_WriteAC(LCD_2_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Freq. 3=%5.1f",(float)channels[10].channel_data/256);
+		sprintf(&string_buf,"Freq. 3=%5.1f Hz",(float)channels[10].channel_data/256);
 		LCD_WriteAC(LCD_3_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Freq.Hi=%5u",(unsigned int)channels[12].channel_data);
+		sprintf(&string_buf,"Freq.Hi=%5u Hz",(unsigned int)channels[12].channel_data);
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
@@ -830,8 +832,12 @@ static float I_ch4=18.6;
 //		sprintf(&string_buf,"DOL =%08lu",(unsigned long)GetCalibrateVal(11,channels[11].channel_data));
 //		LCD_WriteAC(LCD_1_STR_ADDR);
 //		LCD_WriteString(&string_buf);
-		sprintf(&string_buf,"DOL =%08lu",channels[11].channel_data);
+		sprintf(&string_buf,"Freq.Hi=%5u Hz",(unsigned int)channels[13].channel_data);
 		LCD_WriteAC(LCD_1_STR_ADDR);
+		LCD_WriteString(&string_buf);		
+
+		sprintf(&string_buf,"DOL =%08lu",channels[11].channel_data);
+		LCD_WriteAC(LCD_2_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
 
@@ -908,6 +914,7 @@ static float I_ch4=18.6;
 //			CalibrationScreen(12);	
 //		}
 	}
+	wdt_count[Display_Proc].count++;
   }
 
   PT_END(pt);

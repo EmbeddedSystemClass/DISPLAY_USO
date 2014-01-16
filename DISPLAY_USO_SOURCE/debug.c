@@ -41,7 +41,7 @@ void main(void) //using 0
 	LCD_Initialize();
 
 
-//	WDT_Init(WDT_2000);//включить сторожевой таймер
+	WDT_Init(WDT_2000);//включить сторожевой таймер
 	LED=1;
 	BIP=1;
 
@@ -52,7 +52,7 @@ void main(void) //using 0
 		ProtoProcess(&pt_proto);
 		KeyboardProcess(&pt_keyboard);
 
-//		WDT_Process(&pt_wdt);	
+		WDT_Process(&pt_wdt);	
 		DisplayProcess(&pt_display);   
 	}
 }
