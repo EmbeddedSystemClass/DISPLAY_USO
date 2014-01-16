@@ -67,13 +67,13 @@ unsigned char dynamic_disp=0;//номер отображаемого динамического экрана
 menuItem        Null_Menu = {(void*)0, (void*)0, (void*)0, (void*)0, 0, {0x00}};
 
 //                 NEXT,      PREVIOUS     PARENT,     CHILD
-MAKE_MENU(m_s0i1,  m_s0i2,	  NULL_ENTRY,  NULL_ENTRY, m_s1i1,       0, 	"DATA SCREEN1");
-MAKE_MENU(m_s0i2,  m_s0i3,	  m_s0i1,      NULL_ENTRY, m_s1i1,       0, 	"DATA SCREEN2");
-MAKE_MENU(m_s0i3,  m_s0i4,	  m_s0i2,      NULL_ENTRY, m_s1i1,       0, 	"DATA SCREEN3");
-MAKE_MENU(m_s0i4,  NULL_ENTRY,m_s0i3,      NULL_ENTRY, m_s1i1,       0, 	"DATA SCREEN4");
+MAKE_MENU(m_s0i1,  m_s0i2,	  NULL_ENTRY,  NULL_ENTRY, m_s1i2,       0, 	"DATA SCREEN1");
+MAKE_MENU(m_s0i2,  m_s0i3,	  m_s0i1,      NULL_ENTRY, m_s1i2,       0, 	"DATA SCREEN2");
+MAKE_MENU(m_s0i3,  m_s0i4,	  m_s0i2,      NULL_ENTRY, m_s1i2,       0, 	"DATA SCREEN3");
+MAKE_MENU(m_s0i4,  NULL_ENTRY,m_s0i3,      NULL_ENTRY, m_s1i2,       0, 	"DATA SCREEN4");
 
 MAKE_MENU(m_s1i1,  m_s1i2,    NULL_ENTRY,  m_s0i1,     m_s2i1,       0, 		"Channel settings");
-MAKE_MENU(m_s1i2,  /*m_s1i3*/NULL_ENTRY,    m_s1i1,      m_s0i1,     m_s3i1,       0, 		"Channel calibr.");
+MAKE_MENU(m_s1i2,  /*m_s1i3*/NULL_ENTRY,   /*m_s1i1*/NULL_ENTRY,      m_s0i1,     m_s3i1,       0, 		"Channel calibr.");
 MAKE_MENU(m_s1i3,  NULL_ENTRY,m_s1i2,      m_s0i1,     NULL_ENTRY,   MENU_DEV_SET,"Device settings");
 
 // подменю Настройка каналов
@@ -92,19 +92,19 @@ MAKE_MENU(m_s2i12, m_s2i13,	  m_s2i11,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FR
 MAKE_MENU(m_s2i13, NULL_ENTRY,m_s2i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ_HI_SET, 	"Channel freqhi set.");
 
 // подменю Калибровка каналов
-MAKE_MENU(m_s3i1,  m_s3i2,    NULL_ENTRY,  m_s1i1,     NULL_ENTRY,   MENU_CHN1_CAL, 		"Channel 1 cal.");
-MAKE_MENU(m_s3i2,  m_s3i3,    m_s3i1,      m_s1i1,     NULL_ENTRY,   MENU_CHN2_CAL, 		"Channel 2 cal.");
-MAKE_MENU(m_s3i3,  m_s3i4,	  m_s3i2,      m_s1i1,     NULL_ENTRY,   MENU_CHN3_CAL, 		"Channel 3 cal.");
-MAKE_MENU(m_s3i4,  m_s3i5,	  m_s3i3,      m_s1i1,     NULL_ENTRY,   MENU_CHN4_CAL, 		"Channel 4 cal.");
-MAKE_MENU(m_s3i5,  m_s3i6,	  m_s3i4,      m_s1i1,     NULL_ENTRY,   MENU_CHN5_CAL, 		"Channel 5 cal.");
-MAKE_MENU(m_s3i6,  m_s3i7,	  m_s3i5,      m_s1i1,     NULL_ENTRY,   MENU_CHN6_CAL, 		"Channel 6 cal.");
-MAKE_MENU(m_s3i7,  m_s3i8,	  m_s3i6,      m_s1i1,     NULL_ENTRY,   MENU_CHN7_CAL, 		"Channel 7 cal.");
-MAKE_MENU(m_s3i8,  m_s3i9,	  m_s3i7,      m_s1i1,     NULL_ENTRY,   MENU_CHN8_CAL, 		"Channel 8 cal.");
-MAKE_MENU(m_s3i9,  m_s3i10,	  m_s3i8,      m_s1i1,     NULL_ENTRY,   MENU_CHN_DOL_CAL, 		"Channel dol cal.");
-MAKE_MENU(m_s3i10, m_s3i11,	  m_s3i9,      m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ1_CAL, 	"Channel freq1 cal.");
-MAKE_MENU(m_s3i11, m_s3i12,	  m_s3i10,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ2_CAL, 	"Channel freq2 cal.");
-MAKE_MENU(m_s3i12, m_s3i13,	  m_s3i11,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ3_CAL, 	"Channel freq3 cal.");
-MAKE_MENU(m_s3i13, NULL_ENTRY,m_s3i12,     m_s1i1,     NULL_ENTRY,   MENU_CHN_FREQ_HI_CAL, 	"Channel freqhi cal.");
+MAKE_MENU(m_s3i1,  m_s3i2,    NULL_ENTRY,  m_s1i2,     NULL_ENTRY,   MENU_CHN1_CAL, 		"Channel 1 cal.");
+MAKE_MENU(m_s3i2,  m_s3i3,    m_s3i1,      m_s1i2,     NULL_ENTRY,   MENU_CHN2_CAL, 		"Channel 2 cal.");
+MAKE_MENU(m_s3i3,  m_s3i4,	  m_s3i2,      m_s1i2,     NULL_ENTRY,   MENU_CHN3_CAL, 		"Channel 3 cal.");
+MAKE_MENU(m_s3i4,  m_s3i5,	  m_s3i3,      m_s1i2,     NULL_ENTRY,   MENU_CHN4_CAL, 		"Channel 4 cal.");
+MAKE_MENU(m_s3i5,  m_s3i6,	  m_s3i4,      m_s1i2,     NULL_ENTRY,   MENU_CHN5_CAL, 		"Channel 5 cal.");
+MAKE_MENU(m_s3i6,  m_s3i7,	  m_s3i5,      m_s1i2,     NULL_ENTRY,   MENU_CHN6_CAL, 		"Channel 6 cal.");
+MAKE_MENU(m_s3i7,  m_s3i8,	  m_s3i6,      m_s1i2,     NULL_ENTRY,   MENU_CHN7_CAL, 		"Channel 7 cal.");
+MAKE_MENU(m_s3i8,  /*m_s3i9*/NULL_ENTRY,	  m_s3i7,      m_s1i2,     NULL_ENTRY,   MENU_CHN8_CAL, 		"Channel 8 cal.");
+MAKE_MENU(m_s3i9,  m_s3i10,	  m_s3i8,      m_s1i2,     NULL_ENTRY,   MENU_CHN_DOL_CAL, 		"Channel dol cal.");
+MAKE_MENU(m_s3i10, m_s3i11,	  m_s3i9,      m_s1i2,     NULL_ENTRY,   MENU_CHN_FREQ1_CAL, 	"Channel freq1 cal.");
+MAKE_MENU(m_s3i11, m_s3i12,	  m_s3i10,     m_s1i2,     NULL_ENTRY,   MENU_CHN_FREQ2_CAL, 	"Channel freq2 cal.");
+MAKE_MENU(m_s3i12, m_s3i13,	  m_s3i11,     m_s1i2,     NULL_ENTRY,   MENU_CHN_FREQ3_CAL, 	"Channel freq3 cal.");
+MAKE_MENU(m_s3i13, NULL_ENTRY,m_s3i12,     m_s1i2,     NULL_ENTRY,   MENU_CHN_FREQ_HI_CAL, 	"Channel freqhi cal.");
 
 
 unsigned char string_buf[32];
@@ -454,7 +454,7 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 
 			case '=':
 			{
-				if((input_field_ptr->input_char_buf[0]!=' ')&&(input_field_ptr->input_char_buf[0]!='-'))
+				if((input_field_ptr->input_char_buf[0]!=' ')/*&&(input_field_ptr->input_char_buf[0]!='-')*/)
 				{
 					if(input_field_ptr==&input_field_lo)
 					{	
@@ -650,8 +650,6 @@ void CalibrationScreen(unsigned char channel)//экран калибровки канала
 
 			LCD_WriteAC(LCD_1_STR_ADDR+9+input_field_lo.char_count);
 			LCD_WriteCommand(LCD_CMD_CURSOR);
-
-
 	}
 
 	if(input_field_ptr==&input_field_hi)
@@ -775,45 +773,64 @@ static float I_ch4=18.6;
 
 	if(selectedMenuItem == &m_s0i2)
 	{
-		sprintf(&string_buf,"Chnl. 5=%5.3f",GetCalibrateVal(4,channels[4].channel_data));
+		sprintf(&string_buf,"Chnl. 5=%9.3f",GetCalibrateVal(4,channels[4].channel_data));
 		LCD_WriteAC(LCD_1_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Chnl. 6=%5.3f",GetCalibrateVal(5,channels[5].channel_data));
+		sprintf(&string_buf,"Chnl. 6=%9.3f",GetCalibrateVal(5,channels[5].channel_data));
 		LCD_WriteAC(LCD_2_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Chnl. 7=%5.3f",GetCalibrateVal(6,channels[6].channel_data));
+		sprintf(&string_buf,"Chnl. 7=%9.3f",GetCalibrateVal(6,channels[6].channel_data));
 		LCD_WriteAC(LCD_3_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Chnl. 8=%5.3f",GetCalibrateVal(7,channels[7].channel_data));
+		sprintf(&string_buf,"Chnl. 8=%9.3f",GetCalibrateVal(7,channels[7].channel_data));
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
 
 	if(selectedMenuItem == &m_s0i3)
 	{
- 		sprintf(&string_buf,"Freq. 1=%5.1f",GetCalibrateVal(8,channels[8].channel_data));
+// 		sprintf(&string_buf,"Freq. 1=%5.1f",GetCalibrateVal(8,channels[8].channel_data));
+//		LCD_WriteAC(LCD_1_STR_ADDR);
+//		LCD_WriteString(&string_buf);
+//
+//		sprintf(&string_buf,"Freq. 2=%5.1f",GetCalibrateVal(9,channels[9].channel_data));
+//		LCD_WriteAC(LCD_2_STR_ADDR);
+//		LCD_WriteString(&string_buf);
+//
+//		sprintf(&string_buf,"Freq. 3=%5.1f",GetCalibrateVal(10,channels[10].channel_data));
+//		LCD_WriteAC(LCD_3_STR_ADDR);
+//		LCD_WriteString(&string_buf);
+//
+//		sprintf(&string_buf,"Freq. Hi=%5u",(unsigned int)GetCalibrateVal(12,channels[12].channel_data));
+//		LCD_WriteAC(LCD_4_STR_ADDR);
+//		LCD_WriteString(&string_buf);
+
+ 		sprintf(&string_buf,"Freq. 1=%5.1f",(float)channels[8].channel_data/256);
 		LCD_WriteAC(LCD_1_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Freq. 2=%5.1f",GetCalibrateVal(9,channels[9].channel_data));
+		sprintf(&string_buf,"Freq. 2=%5.1f",(float)channels[9].channel_data/256);
 		LCD_WriteAC(LCD_2_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Freq. 3=%5.1f",GetCalibrateVal(10,channels[10].channel_data));
+		sprintf(&string_buf,"Freq. 3=%5.1f",(float)channels[10].channel_data/256);
 		LCD_WriteAC(LCD_3_STR_ADDR);
 		LCD_WriteString(&string_buf);
 
-		sprintf(&string_buf,"Freq. Hi=%5u",(unsigned int)GetCalibrateVal(12,channels[12].channel_data));
+		sprintf(&string_buf,"Freq.Hi=%5u",(unsigned int)channels[12].channel_data);
 		LCD_WriteAC(LCD_4_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
 
 	if(selectedMenuItem == &m_s0i4)
 	{
-		sprintf(&string_buf,"DOL =%08lu",(unsigned long)GetCalibrateVal(11,channels[11].channel_data));
+//		sprintf(&string_buf,"DOL =%08lu",(unsigned long)GetCalibrateVal(11,channels[11].channel_data));
+//		LCD_WriteAC(LCD_1_STR_ADDR);
+//		LCD_WriteString(&string_buf);
+		sprintf(&string_buf,"DOL =%08lu",channels[11].channel_data);
 		LCD_WriteAC(LCD_1_STR_ADDR);
 		LCD_WriteString(&string_buf);
 	}
