@@ -403,9 +403,7 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 		switch(key)
 		{
 			case 'F':
-			{
-				
-
+			{				
 				LCD_WriteCommand(LCD_CMD_CLEAR);
 
 				dynamic_disp= DYN_DISPALY_ON;
@@ -474,23 +472,23 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 
 			case '/':
 			{
-				if(input_field_ptr->char_count==(INPUT_CHAR_BUF_LEN-1))
-				{
-					input_field_ptr->input_char_buf[INPUT_CHAR_BUF_LEN-1]=' ';
-					input_field_ptr->char_count--;
-				}
-				else
-				{
+//				if(input_field_ptr->char_count==(INPUT_CHAR_BUF_LEN-1))
+//				{
+//					input_field_ptr->input_char_buf[INPUT_CHAR_BUF_LEN-1]=' ';
+//					input_field_ptr->char_count--;
+//				}
+//				else
+//				{
 					if(input_field_ptr->char_count)
 					{
-						input_field_ptr->input_char_buf[input_field_ptr->char_count]=' ';
+						input_field_ptr->input_char_buf[input_field_ptr->char_count-1]=' ';
 						input_field_ptr->char_count--;
 					}
-					else
-					{
-						input_field_ptr->input_char_buf[input_field_ptr->char_count]=' ';
-					}
-				}
+//					else
+//					{
+//						input_field_ptr->input_char_buf[input_field_ptr->char_count]=' ';
+//					}
+//				}
 				
 				if(strchr (input_field_ptr->input_char_buf,'.'))
 				{
@@ -503,101 +501,129 @@ void CalibrationKey(unsigned char key,unsigned char channel)
 			}
 			break;
 
-			case '1':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='1';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '2':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='2';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '3':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='3';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '4':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='4';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '5':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='5';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '6':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='6';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '7':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='7';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '8':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='8';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '9':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='9';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '0':
-			{
-			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='0';
-			   input_field_ptr->char_count++;
-			}
-			break;
-
-			case '-':
-			{
-			   if(input_field_ptr->char_count==0)
-			   {
-				   input_field_ptr->input_char_buf[input_field_ptr->char_count]='-';
-				   input_field_ptr->char_count++;
-			   }
-			}
-			break;
-
-			case '.':
-			{
-			   if((input_field_ptr->has_point==0)&&(input_field_ptr->char_count!=0)&&(input_field_ptr->char_count<(INPUT_CHAR_BUF_LEN-1)))
-			   {
-			   	   input_field_ptr->input_char_buf[input_field_ptr->char_count]='.';
-			   	   input_field_ptr->char_count++;
-				   input_field_ptr->has_point=1;
-			   }
-			}
-			break;
+//			case '1':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='1';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '2':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='2';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '3':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='3';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '4':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='4';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '5':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='5';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '6':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='6';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '7':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='7';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '8':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='8';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '9':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='9';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '0':
+//			{
+//			   input_field_ptr->input_char_buf[input_field_ptr->char_count]='0';
+//			   input_field_ptr->char_count++;
+//			}
+//			break;
+//
+//			case '-':
+//			{
+//			   if(input_field_ptr->char_count==0)
+//			   {
+//				   input_field_ptr->input_char_buf[input_field_ptr->char_count]='-';
+//				   input_field_ptr->char_count++;
+//			   }
+//			}
+//			break;
+//
+//			case '.':
+//			{
+//			   if((input_field_ptr->has_point==0)&&(input_field_ptr->char_count!=0)&&(input_field_ptr->char_count<(INPUT_CHAR_BUF_LEN)))
+//			   {
+//			   	   input_field_ptr->input_char_buf[input_field_ptr->char_count]='.';
+//			   	   input_field_ptr->char_count++;
+//				   input_field_ptr->has_point=1;
+//			   }
+//			}
+//			break;
 		}
-		
-		if(input_field_ptr->char_count>=INPUT_CHAR_BUF_LEN)
+
+		if(input_field_ptr->char_count<INPUT_CHAR_BUF_LEN)
 		{
-			 input_field_ptr->char_count=INPUT_CHAR_BUF_LEN-1;
+			if((key>='0') && (key<='9'))
+			{
+				   input_field_ptr->input_char_buf[input_field_ptr->char_count]=key;
+				   input_field_ptr->char_count++;
+			}
+			
+			if(key=='.')
+			{
+				   if((input_field_ptr->has_point==0)&&(input_field_ptr->char_count!=0)&&(input_field_ptr->char_count<(INPUT_CHAR_BUF_LEN)))
+				   {
+				   	   input_field_ptr->input_char_buf[input_field_ptr->char_count]='.';
+				   	   input_field_ptr->char_count++;
+					   input_field_ptr->has_point=1;
+				   }			
+			}
+	
+			if(key=='-')
+			{
+				   if(input_field_ptr->char_count==0)
+				   {
+					   input_field_ptr->input_char_buf[input_field_ptr->char_count]='-';
+					   input_field_ptr->char_count++;
+				   }			
+			}
+		}
+		else
+	//	if(input_field_ptr->char_count>=INPUT_CHAR_BUF_LEN)
+		{
+			 input_field_ptr->char_count=INPUT_CHAR_BUF_LEN/*-1*/;
 		}
 		CalibrationScreen(channel);		
 }
