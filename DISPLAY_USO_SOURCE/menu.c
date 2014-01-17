@@ -9,6 +9,7 @@
 #include <string.h>
 #include "calibrate/calibrate.h"
 #include "watchdog.h"
+#include "device.h"
 
 #define DISPLAY_WIDTH 	20
 #define DISPLAY_HEIGHT	4
@@ -590,7 +591,7 @@ void SettingsKey(unsigned char key)
 				sprintf(input_field_lo.input_char_buf,"%02bu",ADRESS_DEV);	
 				
 
-				input_field_hi.input_char_buf[2]=0;
+//				input_field_hi.input_char_buf[2]=0;
 				input_field_lo.input_char_buf[2]=0;
 
 				input_field_ptr=&input_field_lo;
@@ -618,6 +619,7 @@ void SettingsKey(unsigned char key)
 					{	
 						sscanf(input_field_lo.input_char_buf,"%bu",&ADRESS_DEV);
 						//SetFirstPoint(channel,channels[channel].channel_data,channels[channel].calibrate.cal.cal_lo);
+						Device_Save_Address(ADRESS_DEV);
 					}
 				}
 			}
@@ -650,10 +652,18 @@ void SettingsKey(unsigned char key)
 				   {
 					   if(input_field_ptr->char_count==1)
 					   {
-							   if((key>='0') && (key<='5'))
+					   		   if(input_field_ptr->input_char_buf[0]=='0')
 							   {
-							   		input_field_ptr->input_char_buf[input_field_ptr->char_count]=key;
-							   		input_field_ptr->char_count++;
+								   		input_field_ptr->input_char_buf[input_field_ptr->char_count]=key;
+								   		input_field_ptr->char_count++;							   		
+							   }
+							   else
+							   {
+								   if(((key>='0') && (key<='5')))
+								   {
+								   		input_field_ptr->input_char_buf[input_field_ptr->char_count]=key;
+								   		input_field_ptr->char_count++;
+								   }
 							   }
 					   }
 				   }

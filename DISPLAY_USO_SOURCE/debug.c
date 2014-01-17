@@ -16,6 +16,7 @@
 #include "menu.h"
 #include "keyboard.h"
 #include "calibrate/calibrate.h"
+#include "device.h"
 
 extern struct pt pt_proto, pt_wdt, pt_display, pt_keyboard;
 
@@ -41,7 +42,7 @@ void main(void) //using 0
 
 	UART_Init();
 	LCD_Initialize();
-
+	Device_Restore_Address();
 
 	WDT_Init(WDT_2000);//включить сторожевой таймер
 	LED=1;
