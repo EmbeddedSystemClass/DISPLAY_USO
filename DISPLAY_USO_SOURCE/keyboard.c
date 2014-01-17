@@ -16,6 +16,15 @@ volatile unsigned char key_code=0x0;
 sbit LED=P0^6;
 
 unsigned char Key_Ask(void);
+void Beep(unsigned char time);
+
+unsigned char beep_counter;
+
+void Beep(unsigned char time)
+{
+   beep_counter=time;
+   BIP=0;
+}
 
 PT_THREAD(KeyboardProcess(struct pt *pt))
  {
@@ -41,17 +50,18 @@ PT_THREAD(KeyboardProcess(struct pt *pt))
 			if(key_1!=0)
 			{
 				menuKey(key_code);
-				BIP=0;
-				PT_DELAY(pt,1);
-				BIP=1;
-				PT_DELAY(pt,1);
-				BIP=0;
-				PT_DELAY(pt,1);
-				BIP=1;
-				PT_DELAY(pt,1);
-				BIP=0;
-				PT_DELAY(pt,1);
-				BIP=1;
+//				BIP=0;
+//				PT_DELAY(pt,1);
+//				BIP=1;
+//				PT_DELAY(pt,1);
+//				BIP=0;
+//				PT_DELAY(pt,1);
+//				BIP=1;
+//				PT_DELAY(pt,1);
+//				BIP=0;
+//				PT_DELAY(pt,1);
+//				BIP=1;
+				Beep(2);
 			}			
 		}
 	wdt_count[Key_Proc].count++;	

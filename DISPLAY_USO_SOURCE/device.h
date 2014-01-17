@@ -16,4 +16,7 @@ struct device
 
 };
 
+void Device_Save_Address(unsigned char address);
+unsigned char Device_Restore_Address(void);
+
 #endif

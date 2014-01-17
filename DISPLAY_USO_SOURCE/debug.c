@@ -22,6 +22,8 @@ extern struct pt pt_proto, pt_wdt, pt_display, pt_keyboard;
 sbit BIP=P0^7;
 sbit LED=P0^6;
 
+extern unsigned char beep_counter;
+
  //---------------------------------------
 
 void main(void) //using 0
@@ -67,5 +69,15 @@ void Timer1_Interrupt(void) interrupt 3  //таймер шедулера
 	pt_wdt.pt_time++;
 	pt_display.pt_time++;
 	pt_keyboard.pt_time++;
+
+	if(beep_counter) //для точного отсчета сигнала
+	{ 	
+		 beep_counter--;
+	}
+	else
+	{
+		BIP=1;
+	}
+
 	return;	
 }

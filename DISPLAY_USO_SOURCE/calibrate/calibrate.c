@@ -81,27 +81,27 @@ void SetSecondPoint(unsigned char channel_num,long ADC_Code,float val) //
 //     return crc;
 //}
 //---------------------------------------------------------------
-void Calibrate_Set_Flag(unsigned char channel,unsigned char flag)//установить/снять флаг калиброванности канала
-{
-    unsigned long true_crc=0;
-
-	if(flag==SET)
-	{
-			channels[channel].calibrate.cal.calibrate=1;//установим/снимем флаг калибровки
-			EEPROM_Write(&channels[channel].calibrate.serialize,3,ADC_CALIBRATE_ADDR+channel*3);		
-	}
-	else
-	{
-		if(flag==RESET)
-		{
-			channels[channel].calibrate.cal.calibrate=0;//установим/снимем флаг калибровки
-			EEPROM_Write(&channels[channel].calibrate.serialize,3,ADC_CALIBRATE_ADDR+channel*3);
-		}
-	}
-
-  	true_crc= (unsigned long)Calibrate_Get_CRC();//расчет текущей CRC калибровок
-	EEPROM_Write(&true_crc,1,CALIBRATE_DEVICE_CRC_ADDR);//запомним CRC 	
-}
+//void Calibrate_Set_Flag(unsigned char channel,unsigned char flag)//установить/снять флаг калиброванности канала
+//{
+//    unsigned long true_crc=0;
+//
+//	if(flag==SET)
+//	{
+//			channels[channel].calibrate.cal.calibrate=1;//установим/снимем флаг калибровки
+//			EEPROM_Write(&channels[channel].calibrate.serialize,3,ADC_CALIBRATE_ADDR+channel*3);		
+//	}
+//	else
+//	{
+//		if(flag==RESET)
+//		{
+//			channels[channel].calibrate.cal.calibrate=0;//установим/снимем флаг калибровки
+//			EEPROM_Write(&channels[channel].calibrate.serialize,3,ADC_CALIBRATE_ADDR+channel*3);
+//		}
+//	}
+//
+//  	true_crc= (unsigned long)Calibrate_Get_CRC();//расчет текущей CRC калибровок
+//	EEPROM_Write(&true_crc,1,CALIBRATE_DEVICE_CRC_ADDR);//запомним CRC 	
+//}
 ////----------------------------------------------------------------
 //void Calibrate_Set_Default(void)//установка калибровки по умолчанию(отключена)
 //{
